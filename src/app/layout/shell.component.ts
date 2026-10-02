@@ -17,6 +17,7 @@ import { HandoverStore } from '../handover/application/handover.store';
     <div class="shell">
       <nav class="sidebar" aria-label="Navegacion principal">
         <a routerLink="/pacientes" routerLinkActive="active">Mis pacientes</a>
+        <a routerLink="/prioridad" routerLinkActive="active">Por prioridad</a>
         <a routerLink="/signos-vitales" routerLinkActive="active">Signos vitales</a>
         <a routerLink="/traspasos" routerLinkActive="active">
           Traspasos SBAR

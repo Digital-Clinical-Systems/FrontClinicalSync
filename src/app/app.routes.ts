@@ -10,6 +10,12 @@ export const routes: Routes = [
       .then(m => m.PatientListComponent),
   },
   {
+    path: 'prioridad',
+    title: 'Pacientes por prioridad | ClinicalSync',
+    loadComponent: () => import('./patients/presentation/patient-priority/patient-priority.component')
+      .then(m => m.PatientPriorityComponent),
+  },
+  {
     path: 'signos-vitales',
     title: 'Signos vitales | ClinicalSync',
     loadComponent: () => import('./vital-signs/presentation/vital-signs-dashboard/vital-signs-dashboard.component')
