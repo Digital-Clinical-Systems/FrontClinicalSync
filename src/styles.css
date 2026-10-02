@@ -1,0 +1,26 @@
+/* Tokens alineados con las style guidelines de la seccion 4.1 del informe y con
+   la Landing Page. El verde puro #10b981 no se usa para texto (2.54:1 sobre
+   blanco): para eso esta --cs-emerald-dark (5.48:1, nivel AA). */
+:root {
+  --cs-navy: #172554;
+  --cs-emerald: #10b981;
+  --cs-emerald-dark: #047857;
+  --cs-emerald-darker: #065f46;
+  --cs-slate: #64748b;
+  --cs-border: #e2e8f0;
+  --cs-surface: #f8fafc;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--cs-navy);
+  background: var(--cs-surface);
+}
+.sr-only {
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration:.01ms !important; transition-duration:.01ms !important; }
+}
