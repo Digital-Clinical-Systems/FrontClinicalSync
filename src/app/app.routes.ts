@@ -16,6 +16,12 @@ export const routes: Routes = [
       .then(m => m.VitalSignsDashboardComponent),
   },
   {
+    path: 'indicaciones',
+    title: 'Indicaciones medicas | ClinicalSync',
+    loadComponent: () => import('./medical-orders/presentation/medical-order-form/medical-order-form.component')
+      .then(m => m.MedicalOrderFormComponent),
+  },
+  {
     path: 'traspasos',
     title: 'Traspasos SBAR | ClinicalSync',
     loadComponent: () => import('./handover/presentation/handover-form/handover-form.component')
