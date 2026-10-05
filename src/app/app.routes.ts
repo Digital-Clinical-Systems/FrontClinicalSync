@@ -21,17 +21,16 @@ export const routes: Routes = [
       .then(m => m.VitalSignsDashboardComponent),
   },
   {
-<<<<<<< HEAD
-    path: 'indicaciones',
-    title: 'Indicaciones medicas | ClinicalSync',
-    loadComponent: () => import('./medical-orders/presentation/medical-order-form/medical-order-form.component')
-      .then(m => m.MedicalOrderFormComponent),
-=======
     path: 'resumen-paciente',
     title: 'Resumen del paciente | ClinicalSync',
     loadComponent: () => import('./vital-signs/presentation/patient-summary/patient-summary.component')
       .then(m => m.PatientSummaryComponent),
->>>>>>> origin/feature/us-26-vista-consolidada
+  },
+  {
+    path: 'indicaciones',
+    title: 'Indicaciones medicas | ClinicalSync',
+    loadComponent: () => import('./medical-orders/presentation/medical-order-form/medical-order-form.component')
+      .then(m => m.MedicalOrderFormComponent),
   },
   {
     path: 'traspasos',
