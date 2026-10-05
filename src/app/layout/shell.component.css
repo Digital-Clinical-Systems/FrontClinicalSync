@@ -4,6 +4,10 @@
   background:var(--cs-navy); color:#fff; padding:.8rem 1.25rem; }
 .brand { font-weight:700; letter-spacing:.01em; }
 .user { font-size:.8rem; color:#a9b4c7; }
+.role-switch { margin-left:.75rem; }
+.role-switch select { background:#fff; color:var(--cs-navy); border:0; border-radius:6px; padding:.2rem .4rem; font-size:.8rem; }
+.role-switch select:focus-visible { outline:3px solid #fff; outline-offset:2px; }
+.sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
 .shell { display:grid; grid-template-columns:230px 1fr; min-height:calc(100vh - 52px); }
 .sidebar { background:#fff; border-right:1px solid var(--cs-border); padding:1rem .75rem; display:flex; flex-direction:column; gap:.2rem; }
 .sidebar a { display:flex; justify-content:space-between; align-items:center; gap:.5rem;
