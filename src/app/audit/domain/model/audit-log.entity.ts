@@ -16,7 +16,10 @@ export class AuditLog {
     const actorId = String(
       payload['recordedBy'] ?? payload['acknowledgedBy'] ?? payload['resolvedBy'] ??
       payload['prescribedBy'] ?? payload['outgoingNurseId'] ?? payload['by'] ?? 'sistema');
-    const affectedResource = String(payload['patientId'] ?? payload['alertId'] ?? payload['handoverId'] ?? '-');
+    // El recurso afectado se expresa como el paciente sobre el que ocurrio la
+    // accion. Los identificadores internos del evento permanecen en metadata
+    // para la trazabilidad, pero no se muestran al profesional clinico.
+    const affectedResource = String(payload['patientId'] ?? '-');
     if (!actionType?.trim()) throw new Error('Toda entrada de auditoria requiere tipo de accion');
     return new AuditLog(crypto.randomUUID(), actionType, occurredAt, affectedResource, actorId, Object.freeze({ ...payload }));
   }
