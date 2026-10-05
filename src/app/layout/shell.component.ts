@@ -18,6 +18,7 @@ import { HandoverStore } from '../handover/application/handover.store';
       <nav class="sidebar" aria-label="Navegacion principal">
         <a routerLink="/pacientes" routerLinkActive="active">Mis pacientes</a>
         <a routerLink="/signos-vitales" routerLinkActive="active">Signos vitales</a>
+        <a routerLink="/resumen-paciente" routerLinkActive="active">Resumen del paciente</a>
         <a routerLink="/traspasos" routerLinkActive="active">
           Traspasos SBAR
           @if (handovers.pendingCount() > 0) { <span class="badge">{{ handovers.pendingCount() }}</span> }
