@@ -15,7 +15,7 @@ import { readFileSync } from 'node:fs';
 import { globSync } from 'node:fs';
 import { join, dirname, normalize, sep } from 'node:path';
 
-const CONTEXTS = ['iam', 'patients', 'vital-signs', 'alerts', 'handover', 'audit'];
+const CONTEXTS = ['iam', 'patients', 'vital-signs', 'alerts', 'handover', 'medical-orders', 'audit'];
 const SHARED_KERNEL = ['shared', 'iam'];
 
 const files = globSync('src/app/**/*.ts', { cwd: process.cwd() })

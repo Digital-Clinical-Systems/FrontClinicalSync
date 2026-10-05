@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 
-/** Una ruta por modulo del dashboard clinico definido en la seccion 4.4 del informe. */
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'pacientes' },
   {
@@ -10,10 +9,28 @@ export const routes: Routes = [
       .then(m => m.PatientListComponent),
   },
   {
+    path: 'prioridad',
+    title: 'Pacientes por prioridad | ClinicalSync',
+    loadComponent: () => import('./patients/presentation/patient-priority/patient-priority.component')
+      .then(m => m.PatientPriorityComponent),
+  },
+  {
     path: 'signos-vitales',
     title: 'Signos vitales | ClinicalSync',
     loadComponent: () => import('./vital-signs/presentation/vital-signs-dashboard/vital-signs-dashboard.component')
       .then(m => m.VitalSignsDashboardComponent),
+  },
+  {
+    path: 'resumen-paciente',
+    title: 'Resumen del paciente | ClinicalSync',
+    loadComponent: () => import('./vital-signs/presentation/patient-summary/patient-summary.component')
+      .then(m => m.PatientSummaryComponent),
+  },
+  {
+    path: 'indicaciones',
+    title: 'Indicaciones medicas | ClinicalSync',
+    loadComponent: () => import('./medical-orders/presentation/medical-order-form/medical-order-form.component')
+      .then(m => m.MedicalOrderFormComponent),
   },
   {
     path: 'traspasos',

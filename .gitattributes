@@ -1,0 +1,6 @@
+# Evita que un guardado desde Windows convierta los archivos a CRLF y genere
+# diffs de archivo completo sin cambios reales de texto.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.ico binary

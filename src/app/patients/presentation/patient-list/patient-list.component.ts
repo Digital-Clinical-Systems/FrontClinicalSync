@@ -1,9 +1,11 @@
 import { Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { PatientsStore } from '../../application/patients.store';
 
 @Component({
   selector: 'cs-patient-list',
   standalone: true,
+  imports: [RouterLink],
   template: `
     <h1>Mis pacientes</h1>
     <p class="hint">Pacientes asignados al turno. Datos de demostracion: BC-02 Patients actua
@@ -16,6 +18,7 @@ import { PatientsStore } from '../../application/patients.store';
             <p class="meta">{{ p.medicalRecordNumber }} &middot; {{ p.location.toString() }}</p>
           </div>
           <span class="dx">{{ p.admissionDiagnosis }}</span>
+          <a class="summary-link" [routerLink]="['/resumen-paciente']" [queryParams]="{ paciente: p.id.value }">Ver resumen</a>
         </li>
       }
     </ul>
@@ -28,6 +31,9 @@ import { PatientsStore } from '../../application/patients.store';
       background:#fff; border:1px solid var(--cs-border); border-radius:12px; padding:.9rem 1rem; }
     .meta { margin:.2rem 0 0; font-size:.8rem; color:var(--cs-slate); }
     .dx { font-size:.8rem; color:var(--cs-navy); text-align:right; max-width:22ch; }
+    .summary-link { font-size:.8rem; color:var(--cs-emerald-dark); text-decoration:none; font-weight:600; white-space:nowrap; }
+    .summary-link:hover { text-decoration:underline; }
+    .summary-link:focus-visible { outline:3px solid var(--cs-emerald-dark); outline-offset:2px; }
   `],
 })
 export class PatientListComponent { readonly store = inject(PatientsStore); }
