@@ -27,7 +27,7 @@ import { AlertStatus } from '../../domain/model/alert-status.enum';
               <strong>{{ patients.byId(a.patientId.value)?.fullName ?? a.patientId.value }}</strong>
               <span class="sev">{{ a.severity }}</span>
               <p class="reason">{{ a.reason }}</p>
-              <p class="meta">{{ a.raisedAt | date:'HH:mm:ss' }} &middot; origen: {{ a.triggerSource }}</p>
+              <p class="meta">{{ a.raisedAt | date:'HH:mm:ss' }} &middot; {{ a.originLabel }}</p>
             </div>
             <div class="actions">
               <span class="status">{{ a.status }}</span>

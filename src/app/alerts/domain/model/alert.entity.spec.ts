@@ -6,6 +6,26 @@ const patient = PatientId.of('pac-001');
 const enfermera = UserId.of('enf-001');
 const nueva = () => Alert.raise(patient, AlertSeverity.Critical, 'vital-sign:abc', 'SpO2 bajo');
 
+describe('Alert (BC-04) — issues #1 y #2: identificadores internos en pantalla', () => {
+  it('expone un origen legible y no el identificador tecnico (issue #1)', () => {
+    const a = nueva();
+    expect(a.triggerSource).toContain('vital-sign:');     // se conserva para trazabilidad
+    expect(a.originLabel).toBe('Registro de signos vitales');
+    expect(a.originLabel).not.toContain('vital-sign:');   // pero no se muestra asi
+  });
+
+  it('los eventos de atencion y resolucion llevan el paciente (issue #2)', () => {
+    const a = nueva();
+    a.acknowledge(enfermera);
+    const atendida = a.pullEvents().find(e => e.name === 'AlertaAtendida');
+    expect(atendida?.payload['patientId']).toBe('pac-001');
+
+    a.resolve(enfermera);
+    const resuelta = a.pullEvents().find(e => e.name === 'AlertaResuelta');
+    expect(resuelta?.payload['patientId']).toBe('pac-001');
+  });
+});
+
 describe('Alert (BC-04) — invariantes del ciclo de vida', () => {
   it('exige el origen que la disparo', () => {
     expect(() => Alert.raise(patient, AlertSeverity.Critical, '', 'x'))
