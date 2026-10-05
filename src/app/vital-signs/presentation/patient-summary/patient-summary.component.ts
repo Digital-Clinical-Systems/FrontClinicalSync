@@ -1,70 +1,188 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, input, signal, computed } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
 import { PatientsStore } from '../../../patients/application/patients.store';
-import { VitalSignsStore } from '../../../vital-signs/application/vital-signs.store';
+import { VitalSignsStore } from '../../application/vital-signs.store';
+import { AlertsStore } from '../../../alerts/application/alerts.store';
+import { AlertStatus } from '../../../alerts/domain/model/alert-status.enum';
+import {
+  recordsForPatient, trendsBetween,
+  Trend, VitalTrends,
+} from '../../application/patient-evolution';
+import { VitalSignRecord } from '../../domain/model/vital-sign-record.entity';
 
-/**
- * US-26 y US-27 — Vista consolidada del paciente (BG-03).
- *
- * CONTEXTO
- * El medico especialista hoy consulta entre tres y cuatro fuentes distintas y
- * tarda entre 10 y 15 minutos por paciente (Entrevista 1 del segmento de
- * medicos, seccion 2.2.2 del informe). Esta pantalla existe para que esa
- * informacion este en un solo lugar.
- *
- * QUE DEBE MOSTRAR
- *  1. Selector de paciente (reutiliza patients.patients() como en las otras pantallas).
- *  2. Datos del paciente: nombre, numero de historia clinica, cama, diagnostico.
- *  3. Ultimo registro de signos vitales con su nivel de riesgo destacado.
- *  4. Evolucion reciente: los ultimos 5 registros en orden cronologico,
- *     para que se vea la tendencia y no solo el valor actual.
- *
- * DE DONDE SALEN LOS DATOS
- *  - patients.byId(id)                        -> datos del paciente
- *  - vitalSigns.records()                     -> todos los registros
- *    filtrados por r.patientId.value === id   -> los de este paciente
- *  Ya vienen ordenados del mas reciente al mas antiguo.
- *
- * REGLA QUE NO HAY QUE ROMPER
- * Este componente vive en vital-signs/presentation/. Puede leer de la capa
- * application/ de otros contextos (como hace vital-signs-dashboard con
- * PatientsStore), pero nunca de su infrastructure/. Antes de hacer el PR corre:
- *     npm run check:boundaries
- *
- * COMO VERLO MIENTRAS TRABAJAS
- *  1. Agrega la ruta en src/app/app.routes.ts siguiendo el patron de las otras.
- *  2. Agrega el enlace en src/app/layout/shell.component.ts.
- *  3. npm start  ->  http://localhost:4200
- */
 @Component({
   selector: 'cs-patient-summary',
   standalone: true,
-  imports: [DatePipe],
+  imports: [DatePipe, RouterLink],
   template: `
     <h1>Resumen del paciente</h1>
-    <!-- TODO: selector de paciente -->
-    <!-- TODO: tarjeta con los datos del paciente -->
-    <!-- TODO: ultimo registro con su nivel de riesgo -->
-    <!-- TODO: tabla o lista con los ultimos 5 registros -->
+    <p class="hint">US-26 y US-27 &middot; Vista consolidada para el medico: estado actual y
+      evolucion reciente en una sola pantalla. El riesgo lo deriva el dominio de
+      Vital Signs; esta vista solo lo lee.</p>
+
+    @if (allPatients().length === 0) {
+      <p class="empty">No hay pacientes registrados en el turno.</p>
+    } @else {
+      <div class="patient-select">
+        <label for="patient-selector">Paciente</label>
+        <select id="patient-selector"
+                [value]="selectedId()"
+                (change)="onSelect($any($event.target).value)">
+          @for (p of allPatients(); track p.id.value) {
+            <option [value]="p.id.value">{{ p.fullName }} &mdash; {{ p.location.toString() }}</option>
+          }
+        </select>
+      </div>
+
+      @if (patient(); as p) {
+        <section class="summary-card" [attr.aria-label]="'Datos de ' + p.fullName">
+          <h2 class="summary-card__title">{{ p.fullName }}</h2>
+          <p class="summary-card__meta">HC: {{ p.medicalRecordNumber }} &middot; {{ p.location.toString() }}</p>
+          <p class="summary-card__meta">Diagnostico de ingreso: {{ p.admissionDiagnosis }}</p>
+          <p class="summary-card__meta">Admitido el {{ p.admittedAt | date:'dd/MM/yyyy HH:mm' }}</p>
+        </section>
+      }
+
+      @if (latest(); as last) {
+        <section class="summary-card"
+                 [class.summary-card--critical]="last.riskLevel === 'CRITICAL'"
+                 aria-label="Ultimo registro de signos vitales">
+          <h2 class="summary-card__title">Ultimo registro</h2>
+          @if (last.riskLevel === 'CRITICAL') {
+            <p class="summary-card__critical-label">Riesgo critico</p>
+          }
+          <div class="latest-header">
+            <span class="latest-header__time">{{ last.measuredAt | date:'HH:mm' }}</span>
+            <span class="tag" [class]="'tag--' + last.riskLevel.toLowerCase()">{{ last.riskLevel }}</span>
+            <span class="latest-header__by">Registrado por {{ last.recordedBy.value }}</span>
+          </div>
+          <div class="metrics-grid">
+            <div class="metric">
+              <div class="metric__label">PA (PAM)</div>
+              <div class="metric__value">
+                {{ last.bloodPressure.toString() }}
+                ({{ last.bloodPressure.meanArterialPressure }})
+                <span class="metric__trend"
+                      [attr.aria-label]="trendLabel(latestTrends().systolic)">{{ trendArrow(latestTrends().systolic) }}</span>
+              </div>
+            </div>
+            <div class="metric">
+              <div class="metric__label">FC (lpm)</div>
+              <div class="metric__value">
+                {{ last.heartRate }}
+                <span class="metric__trend"
+                      [attr.aria-label]="trendLabel(latestTrends().heartRate)">{{ trendArrow(latestTrends().heartRate) }}</span>
+              </div>
+            </div>
+            <div class="metric">
+              <div class="metric__label">SpO2 (%)</div>
+              <div class="metric__value">
+                {{ last.oxygenSaturation }}
+                <span class="metric__trend"
+                      [attr.aria-label]="trendLabel(latestTrends().oxygenSaturation)">{{ trendArrow(latestTrends().oxygenSaturation) }}</span>
+              </div>
+            </div>
+            <div class="metric">
+              <div class="metric__label">T (&deg;C)</div>
+              <div class="metric__value">
+                {{ last.temperature }}
+                <span class="metric__trend"
+                      [attr.aria-label]="trendLabel(latestTrends().temperature)">{{ trendArrow(latestTrends().temperature) }}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      } @else {
+        <section class="summary-card">
+          <p class="empty">Este paciente aun no tiene registros de signos vitales en el turno.</p>
+          <a class="empty-link" routerLink="/signos-vitales">Registrar signos vitales</a>
+        </section>
+      }
+
+      <section aria-label="Alertas abiertas del paciente">
+        <h2>Alertas abiertas</h2>
+        @if (openAlerts().length === 0) {
+          <p class="empty">Sin alertas abiertas.</p>
+        } @else {
+          <ul class="alert-list">
+            @for (a of openAlerts(); track a.id) {
+              <li class="alert-item">
+                <div>
+                  <span class="tag" [class]="'tag--' + a.severity.toLowerCase()">{{ a.severity }}</span>
+                  <span class="alert-item__reason">{{ a.reason }}</span>
+                </div>
+                <span class="alert-item__time">{{ a.raisedAt | date:'HH:mm' }}</span>
+              </li>
+            }
+          </ul>
+          <a class="alert-link" routerLink="/alertas">Ir a alertas</a>
+        }
+      </section>
+    }
   `,
-  styles: [`
-    h1 { color: var(--cs-navy); font-size: 1.4rem; margin: 0 0 1rem; }
-  `],
+  styleUrl: './patient-summary.component.css',
 })
 export class PatientSummaryComponent {
   private readonly patients = inject(PatientsStore);
   private readonly vitalSigns = inject(VitalSignsStore);
+  private readonly alertsStore = inject(AlertsStore);
+  private readonly router = inject(Router);
 
-  readonly selectedId = signal(this.patients.patients()[0]?.id.value ?? '');
+  readonly paciente = input<string>();
+
+  private readonly manualSelection = signal<string | null>(null);
+
+  protected readonly allPatients = this.patients.patients;
+
+  readonly selectedId = computed(() => {
+    const manual = this.manualSelection();
+    if (manual && this.patients.byId(manual)) return manual;
+    const fromRoute = this.paciente();
+    if (fromRoute && this.patients.byId(fromRoute)) return fromRoute;
+    return this.patients.patients()[0]?.id.value ?? '';
+  });
 
   readonly patient = computed(() => this.patients.byId(this.selectedId()));
 
-  /** Los 5 registros mas recientes de este paciente. */
-  readonly recentRecords = computed(() =>
-    this.vitalSigns.records()
-      .filter(r => r.patientId.value === this.selectedId())
-      .slice(0, 5),
+  readonly patientRecords = computed(() =>
+    recordsForPatient(this.vitalSigns.records(), this.selectedId()),
   );
 
-  // TODO: un computed que devuelva solo el ultimo registro (recentRecords()[0])
+  readonly latest = computed(() => this.patientRecords()[0] as VitalSignRecord | undefined);
+  readonly previous = computed(() => this.patientRecords()[1] as VitalSignRecord | undefined);
+
+  readonly latestTrends = computed((): VitalTrends => {
+    const l = this.latest();
+    return l ? trendsBetween(l, this.previous()) : { heartRate: 'none', oxygenSaturation: 'none', systolic: 'none', temperature: 'none' };
+  });
+
+  readonly openAlerts = computed(() =>
+    this.alertsStore.alerts()
+      .filter(a => a.patientId.value === this.selectedId() && a.status === AlertStatus.Open)
+      .sort((a, b) => b.raisedAt.getTime() - a.raisedAt.getTime()),
+  );
+
+  onSelect(id: string): void {
+    this.manualSelection.set(id);
+    this.router.navigate([], { queryParams: { paciente: id }, replaceUrl: true });
+  }
+
+  protected trendArrow(trend: Trend): string {
+    switch (trend) {
+      case 'up': return '↑';
+      case 'down': return '↓';
+      case 'stable': return '→';
+      case 'none': return '';
+    }
+  }
+
+  protected trendLabel(trend: Trend): string {
+    switch (trend) {
+      case 'up': return 'subio respecto del registro anterior';
+      case 'down': return 'bajo respecto del registro anterior';
+      case 'stable': return 'estable respecto del registro anterior';
+      case 'none': return 'sin registro previo para comparar';
+    }
+  }
 }
