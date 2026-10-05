@@ -6,7 +6,8 @@ import { VitalSignsStore } from '../../application/vital-signs.store';
 import { AlertsStore } from '../../../alerts/application/alerts.store';
 import { AlertStatus } from '../../../alerts/domain/model/alert-status.enum';
 import {
-  recordsForPatient, trendsBetween,
+  EVOLUTION_RANGES, EvolutionRangeId, EVOLUTION_LIMIT,
+  recordsForPatient, withinRange, toChronological, trendsBetween,
   Trend, VitalTrends,
 } from '../../application/patient-evolution';
 import { VitalSignRecord } from '../../domain/model/vital-sign-record.entity';
@@ -119,6 +120,90 @@ import { VitalSignRecord } from '../../domain/model/vital-sign-record.entity';
           <a class="alert-link" routerLink="/alertas">Ir a alertas</a>
         }
       </section>
+
+      <section aria-label="Evolucion reciente de signos vitales">
+        <h2>Evolucion reciente</h2>
+        <div class="range-group" role="group" aria-label="Rango de tiempo">
+          @for (r of ranges; track r.id) {
+            <button type="button"
+                    class="range-btn"
+                    [class.range-btn--active]="range() === r.id"
+                    [attr.aria-pressed]="range() === r.id"
+                    (click)="range.set(r.id)">{{ r.label }}</button>
+          }
+        </div>
+
+        @if (evolution().length === 0) {
+          <p class="empty">No hay registros en el rango seleccionado.</p>
+        } @else {
+          <p class="table-info">Mostrando {{ evolution().length }} registro{{ evolution().length === 1 ? '' : 's' }} en orden cronologico</p>
+          <div class="table-wrapper">
+            <table>
+              <caption class="sr-only">Evolucion de signos vitales del paciente</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Hora</th>
+                  <th scope="col">PA</th>
+                  <th scope="col">FC</th>
+                  <th scope="col">SpO2</th>
+                  <th scope="col">T</th>
+                  <th scope="col">Riesgo</th>
+                  <th scope="col"><span class="sr-only">Acciones</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of evolution(); track row.record.id; let i = $index) {
+                  <tr>
+                    <td>{{ row.record.measuredAt | date:'HH:mm' }}</td>
+                    <td>
+                      {{ row.record.bloodPressure.toString() }}
+                      <span class="metric__trend" [attr.aria-label]="trendLabel(row.trends.systolic)">{{ trendArrow(row.trends.systolic) }}</span>
+                    </td>
+                    <td>
+                      {{ row.record.heartRate }}
+                      <span class="metric__trend" [attr.aria-label]="trendLabel(row.trends.heartRate)">{{ trendArrow(row.trends.heartRate) }}</span>
+                    </td>
+                    <td>
+                      {{ row.record.oxygenSaturation }}%
+                      <span class="metric__trend" [attr.aria-label]="trendLabel(row.trends.oxygenSaturation)">{{ trendArrow(row.trends.oxygenSaturation) }}</span>
+                    </td>
+                    <td>
+                      {{ row.record.temperature }}
+                      <span class="metric__trend" [attr.aria-label]="trendLabel(row.trends.temperature)">{{ trendArrow(row.trends.temperature) }}</span>
+                    </td>
+                    <td><span class="tag" [class]="'tag--' + row.record.riskLevel.toLowerCase()">{{ row.record.riskLevel }}</span></td>
+                    <td>
+                      <button type="button" class="detail-btn"
+                              [attr.aria-expanded]="selectedRecordId() === row.record.id"
+                              [attr.aria-controls]="'detail-' + row.record.id"
+                              (click)="toggleDetail(row.record.id)">Ver detalle</button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </section>
+
+      @if (selectedRecord(); as detail) {
+        <section class="detail-panel" [id]="'detail-' + detail.id" aria-live="polite">
+          <h2 class="detail-panel__title">Detalle del registro</h2>
+          <p class="detail-panel__row"><span class="detail-panel__label">Fecha y hora:</span> {{ detail.measuredAt | date:'dd/MM/yyyy HH:mm:ss' }}</p>
+          <p class="detail-panel__row"><span class="detail-panel__label">PA:</span> {{ detail.bloodPressure.toString() }} (PAM {{ detail.bloodPressure.meanArterialPressure }})</p>
+          <p class="detail-panel__row"><span class="detail-panel__label">FC:</span> {{ detail.heartRate }} lpm</p>
+          <p class="detail-panel__row"><span class="detail-panel__label">SpO2:</span> {{ detail.oxygenSaturation }}%</p>
+          <p class="detail-panel__row"><span class="detail-panel__label">Temperatura:</span> {{ detail.temperature }} &deg;C</p>
+          <p class="detail-panel__row"><span class="detail-panel__label">Riesgo:</span>
+            <span class="tag" [class]="'tag--' + detail.riskLevel.toLowerCase()">{{ detail.riskLevel }}</span></p>
+          <p class="detail-panel__row"><span class="detail-panel__label">Responsable:</span> {{ detail.recordedBy.value }}</p>
+          <p class="detail-panel__row"><span class="detail-panel__label">ID registro:</span> {{ detail.id.substring(0, 8) }}</p>
+          @if (detail.corrects) {
+            <p class="detail-panel__row"><span class="detail-panel__label">Corrige al registro:</span> {{ detail.corrects.substring(0, 8) }}</p>
+          }
+          <button type="button" class="close-btn" (click)="selectedRecordId.set(null)">Cerrar detalle</button>
+        </section>
+      }
     }
   `,
   styleUrl: './patient-summary.component.css',
@@ -157,15 +242,43 @@ export class PatientSummaryComponent {
     return l ? trendsBetween(l, this.previous()) : { heartRate: 'none', oxygenSaturation: 'none', systolic: 'none', temperature: 'none' };
   });
 
+  readonly range = signal<EvolutionRangeId>('all');
+  protected readonly ranges = EVOLUTION_RANGES;
+
+  readonly evolution = computed(() => {
+    const rangeConfig = EVOLUTION_RANGES.find(r => r.id === this.range())!;
+    const now = this.vitalSigns.records().length >= 0 ? new Date() : new Date();
+    const filtered = withinRange(this.patientRecords(), rangeConfig.hours, now);
+    const limited = filtered.slice(0, EVOLUTION_LIMIT);
+    const chrono = toChronological(limited);
+    return chrono.map((record, i) => ({
+      record,
+      trends: trendsBetween(record, i > 0 ? chrono[i - 1] : undefined),
+    }));
+  });
+
   readonly openAlerts = computed(() =>
     this.alertsStore.alerts()
       .filter(a => a.patientId.value === this.selectedId() && a.status === AlertStatus.Open)
       .sort((a, b) => b.raisedAt.getTime() - a.raisedAt.getTime()),
   );
 
+  readonly selectedRecordId = signal<string | null>(null);
+
+  readonly selectedRecord = computed(() => {
+    const id = this.selectedRecordId();
+    if (!id) return undefined;
+    return this.patientRecords().find(r => r.id === id);
+  });
+
   onSelect(id: string): void {
     this.manualSelection.set(id);
     this.router.navigate([], { queryParams: { paciente: id }, replaceUrl: true });
+    this.selectedRecordId.set(null);
+  }
+
+  toggleDetail(id: string): void {
+    this.selectedRecordId.set(this.selectedRecordId() === id ? null : id);
   }
 
   protected trendArrow(trend: Trend): string {
