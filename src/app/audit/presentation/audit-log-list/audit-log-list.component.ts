@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { AuditStore } from '../../application/audit.store';
+import { PatientsStore } from '../../../patients/application/patients.store';
 
 @Component({
   selector: 'cs-audit-log-list',
@@ -20,7 +21,7 @@ import { AuditStore } from '../../application/audit.store';
         <tbody>
           @for (l of store.logs(); track l.id) {
             <tr><td>{{ l.occurredAt | date:'HH:mm:ss' }}</td><td>{{ l.actionType }}</td>
-              <td>{{ l.actorId }}</td><td>{{ l.affectedResource }}</td></tr>
+              <td>{{ l.actorId }}</td><td>{{ paciente(l.affectedResource) }}</td></tr>
           }
         </tbody>
       </table>
@@ -35,4 +36,13 @@ import { AuditStore } from '../../application/audit.store';
     .empty { color:var(--cs-slate); }
   `],
 })
-export class AuditLogListComponent { readonly store = inject(AuditStore); }
+export class AuditLogListComponent {
+  readonly store = inject(AuditStore);
+  private readonly patients = inject(PatientsStore);
+
+  /** Traduce el identificador del paciente a su nombre para la lectura humana. */
+  paciente(id: string): string {
+    if (!id || id === '-') return 'No aplica';
+    return this.patients.byId(id)?.fullName ?? id;
+  }
+}

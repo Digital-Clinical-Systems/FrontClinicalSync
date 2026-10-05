@@ -39,7 +39,9 @@ export class Alert extends AggregateRoot {
     }
     this._status = AlertStatus.Acknowledged;
     this._acknowledgedBy = by;
-    this.record(domainEvent('AlertaAtendida', { alertId: this.id, acknowledgedBy: by.value }));
+    this.record(domainEvent('AlertaAtendida', {
+      alertId: this.id, patientId: this.patientId.value, acknowledgedBy: by.value,
+    }));
   }
 
   resolve(by: UserId): void {
@@ -47,7 +49,24 @@ export class Alert extends AggregateRoot {
       throw new Error('Una alerta no puede resolverse sin haber sido atendida antes');
     }
     this._status = AlertStatus.Resolved;
-    this.record(domainEvent('AlertaResuelta', { alertId: this.id, resolvedBy: by.value }));
+    this.record(domainEvent('AlertaResuelta', {
+      alertId: this.id, patientId: this.patientId.value, resolvedBy: by.value,
+    }));
+  }
+
+  /**
+   * Descripcion legible del origen, para mostrar al profesional clinico.
+   * El triggerSource conserva el identificador tecnico porque la trazabilidad
+   * de BG-05 lo necesita; esta propiedad es su traduccion para la interfaz.
+   */
+  get originLabel(): string {
+    if (this.triggerSource.startsWith('vital-sign:')) {
+      return 'Registro de signos vitales';
+    }
+    if (this.triggerSource.startsWith('clinical-event:')) {
+      return 'Evento clinico registrado';
+    }
+    return 'Origen no identificado';
   }
 
   get status(): AlertStatus { return this._status; }
