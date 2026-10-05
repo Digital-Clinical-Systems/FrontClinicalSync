@@ -30,10 +30,14 @@ import { MedicalOrdersStore } from '../medical-orders/application/medical-orders
         <a routerLink="/pacientes" routerLinkActive="active">Mis pacientes</a>
         <a routerLink="/prioridad" routerLinkActive="active">Por prioridad</a>
         <a routerLink="/signos-vitales" routerLinkActive="active">Signos vitales</a>
+<<<<<<< HEAD
         <a routerLink="/indicaciones" routerLinkActive="active">
           Indicaciones
           @if (orders.activeCount() > 0) { <span class="badge">{{ orders.activeCount() }}</span> }
         </a>
+=======
+        <a routerLink="/resumen-paciente" routerLinkActive="active">Resumen del paciente</a>
+>>>>>>> origin/feature/us-26-vista-consolidada
         <a routerLink="/traspasos" routerLinkActive="active">
           Traspasos SBAR
           @if (handovers.pendingCount() > 0) { <span class="badge">{{ handovers.pendingCount() }}</span> }

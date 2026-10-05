@@ -65,6 +65,7 @@ donde un error tiene consecuencia clínica:
 | `vital-sign-record.entity.spec.ts` | Riesgo derivado y no asignable; inmutabilidad; eventos publicados |
 | `handover.entity.spec.ts` | Cuatro secciones SBAR obligatorias; entrante distinto del saliente; acuse único |
 | `alert.entity.spec.ts` | Alerta con origen; no se resuelve sin atender; sin retroceso de estado |
+| `patient-evolution.spec.ts` | Filtro por paciente y rango; orden cronologico; tendencias |
 
 ## Verificación de fronteras
 

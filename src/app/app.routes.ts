@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 
-/** Una ruta por modulo del dashboard clinico definido en la seccion 4.4 del informe. */
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'pacientes' },
   {
@@ -22,10 +21,17 @@ export const routes: Routes = [
       .then(m => m.VitalSignsDashboardComponent),
   },
   {
+<<<<<<< HEAD
     path: 'indicaciones',
     title: 'Indicaciones medicas | ClinicalSync',
     loadComponent: () => import('./medical-orders/presentation/medical-order-form/medical-order-form.component')
       .then(m => m.MedicalOrderFormComponent),
+=======
+    path: 'resumen-paciente',
+    title: 'Resumen del paciente | ClinicalSync',
+    loadComponent: () => import('./vital-signs/presentation/patient-summary/patient-summary.component')
+      .then(m => m.PatientSummaryComponent),
+>>>>>>> origin/feature/us-26-vista-consolidada
   },
   {
     path: 'traspasos',
