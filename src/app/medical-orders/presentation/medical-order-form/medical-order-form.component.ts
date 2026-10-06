@@ -7,10 +7,11 @@ import { Dosage } from '../../domain/model/dosage.vo';
 import { PatientsStore } from '../../../patients/application/patients.store';
 import { CurrentUser } from '../../../iam/domain/model/current-user';
 import { DirectoryStore } from '../../../iam/application/directory.store';
-import { Role } from '../../../iam/domain/model/role.enum';
+import { Permissions, Permiso } from '../../../iam/application/permissions';
 import { PatientId } from '../../../shared/domain/model/identifier';
 import { ChipComponent } from '../../../shared/presentation/risk-chip.component';
 import { EmptyStateComponent } from '../../../shared/presentation/empty-state.component';
+import { pacienteDeLaRuta } from '../../../shared/presentation/selected-patient';
 
 @Component({
   selector: 'cs-medical-order-form',
@@ -66,6 +67,13 @@ import { EmptyStateComponent } from '../../../shared/presentation/empty-state.co
     @if (error()) { <p class="notice notice--error" role="alert">{{ error() }}</p> }
     @if (ok()) { <p class="notice notice--ok" role="status">{{ ok() }}</p> }
 
+    @if (!permisos.esEnfermeria) {
+      <p class="notice notice--info">
+        {{ motivoGeneralCumplimiento }}
+        Puedes consultarlas y emitir nuevas; el registro de ejecucion corresponde a quien administra.
+      </p>
+    }
+
     <section class="card card--flush">
       <div class="card__head"><h2>Indicaciones &middot; US-23 y US-25</h2></div>
       <div class="table-wrap">
@@ -106,9 +114,15 @@ import { EmptyStateComponent } from '../../../shared/presentation/empty-state.co
                 </td>
                 <td>
                   @if (o.isPending) {
-                    <button type="button" class="btn btn--primary btn--sm" (click)="cumplir(o)">
-                      Registrar cumplimiento<span class="sr-only"> de {{ o.dosage.medication }}</span>
-                    </button>
+                    @if (permisoCumplir(o); as permiso) {
+                      <button type="button" class="btn btn--primary btn--sm"
+                              [disabled]="!permiso.permitido" (click)="cumplir(o)">
+                        Registrar cumplimiento<span class="sr-only"> de {{ o.dosage.medication }}</span>
+                      </button>
+                      @if (!permiso.permitido && permiso.motivo !== motivoGeneralCumplimiento) {
+                        <span class="motivo">{{ permiso.motivo }}</span>
+                      }
+                    }
                   } @else { <span class="muted">&mdash;</span> }
                 </td>
               </tr>
@@ -125,16 +139,17 @@ import { EmptyStateComponent } from '../../../shared/presentation/empty-state.co
 
     <form class="card" (ngSubmit)="emitir()" novalidate>
       <h2>Emitir indicacion &middot; US-22</h2>
-      @if (!esMedico()) {
+      @if (!puedeEmitir().permitido) {
         <p class="notice notice--info">
-          Solo un medico puede emitir una indicacion. Cambia el rol en la barra superior para
-          usar este formulario; la regla la impone el agregado y no esta pantalla.
+          {{ puedeEmitir().motivo }}
+          La regla la impone el agregado MedicalOrder, no esta pantalla: el formulario solo
+          se adelanta a explicarla.
         </p>
       }
       <div class="form-grid">
         <div class="field">
           <label for="o-paciente">Paciente</label>
-          <select id="o-paciente" name="oPaciente" [(ngModel)]="pacienteId" [disabled]="!esMedico()" required>
+          <select id="o-paciente" name="oPaciente" [(ngModel)]="pacienteId" [disabled]="!puedeEmitir().permitido" required>
             @for (p of patients.patients(); track p.id.value) {
               <option [value]="p.id.value">{{ p.fullName }}</option>
             }
@@ -142,23 +157,23 @@ import { EmptyStateComponent } from '../../../shared/presentation/empty-state.co
         </div>
         <div class="field">
           <label for="o-med">Medicamento</label>
-          <input id="o-med" name="oMed" [(ngModel)]="medicamento" [disabled]="!esMedico()" required />
+          <input id="o-med" name="oMed" [(ngModel)]="medicamento" [disabled]="!puedeEmitir().permitido" required />
         </div>
         <div class="field">
           <label for="o-dosis">Dosis</label>
-          <input id="o-dosis" name="oDosis" [(ngModel)]="dosis" [disabled]="!esMedico()" required />
+          <input id="o-dosis" name="oDosis" [(ngModel)]="dosis" [disabled]="!puedeEmitir().permitido" required />
         </div>
         <div class="field">
           <label for="o-via">Via</label>
-          <input id="o-via" name="oVia" [(ngModel)]="via" [disabled]="!esMedico()" required />
+          <input id="o-via" name="oVia" [(ngModel)]="via" [disabled]="!puedeEmitir().permitido" required />
         </div>
         <div class="field">
           <label for="o-frec">Frecuencia</label>
-          <input id="o-frec" name="oFrec" [(ngModel)]="frecuencia" [disabled]="!esMedico()" required />
+          <input id="o-frec" name="oFrec" [(ngModel)]="frecuencia" [disabled]="!puedeEmitir().permitido" required />
         </div>
         <div class="field">
           <label for="o-reemplaza">Reemplaza a</label>
-          <select id="o-reemplaza" name="oReemplaza" [(ngModel)]="reemplazaId" [disabled]="!esMedico()">
+          <select id="o-reemplaza" name="oReemplaza" [(ngModel)]="reemplazaId" [disabled]="!puedeEmitir().permitido">
             <option value="">No reemplaza ninguna</option>
             @for (o of store.activeFor(pacienteId); track o.id) {
               <option [value]="o.id">{{ o.dosage.medication }} {{ o.dosage.dose }}</option>
@@ -168,32 +183,48 @@ import { EmptyStateComponent } from '../../../shared/presentation/empty-state.co
         </div>
       </div>
       <div class="form-actions">
-        <button type="submit" class="btn btn--primary" [disabled]="!esMedico()">Emitir indicacion</button>
+        <button type="submit" class="btn btn--primary" [disabled]="!puedeEmitir().permitido">Emitir indicacion</button>
       </div>
     </form>
   `,
+  styles: [`
+    .motivo { display:block; font-size:.74rem; color:var(--cs-ink-3); max-width:30ch; margin-top:.25rem; }
+  `],
 })
 export class MedicalOrderFormComponent {
   readonly store = inject(MedicalOrdersStore);
   readonly patients = inject(PatientsStore);
   readonly directory = inject(DirectoryStore);
+  readonly permisos = inject(Permissions);
   private readonly user = inject(CurrentUser);
 
-  private readonly _filtro = signal('');
+  private readonly _filtro = signal(pacienteDeLaRuta());
   private readonly _vista = signal('ACTIVE');
   get filtro(): string { return this._filtro(); }
   set filtro(v: string) { this._filtro.set(v); }
   get vista(): string { return this._vista(); }
   set vista(v: string) { this._vista.set(v); }
 
-  private readonly _paciente = signal('');
+  private readonly _paciente = signal(pacienteDeLaRuta());
   get pacienteId(): string { return this._paciente() || (this.patients.patients()[0]?.id.value ?? ''); }
   set pacienteId(v: string) { this._paciente.set(v); this.reemplazaId = ''; }
 
   medicamento = ''; dosis = ''; via = 'Via oral'; frecuencia = 'Cada 24 horas'; reemplazaId = '';
   readonly error = signal(''); readonly ok = signal('');
 
-  esMedico(): boolean { return this.user.role() === Role.Physician; }
+  /**
+   * Motivo que afecta a todas las filas por igual. Se muestra una sola vez sobre
+   * la tabla: repetirlo en cada fila convierte una regla en ruido y tapa los
+   * motivos que si son particulares de una indicacion.
+   */
+  readonly motivoGeneralCumplimiento =
+    'El cumplimiento lo registra el personal de enfermeria, que es quien administra la indicacion.';
+
+  puedeEmitir(): Permiso { return this.permisos.emitirIndicacion(); }
+
+  permisoCumplir(o: MedicalOrder): Permiso {
+    return this.permisos.registrarCumplimiento(o.prescribedBy.value, !!o.fulfilledAt, o.isActive);
+  }
 
   readonly visibles = computed(() => {
     const p = this._filtro(); const v = this._vista();
@@ -221,7 +252,7 @@ export class MedicalOrderFormComponent {
   cumplir(o: MedicalOrder): void {
     this.error.set(''); this.ok.set('');
     try {
-      this.store.fulfill(o, this.user.id());
+      this.store.fulfill(o, this.user.id(), this.user.role());
       this.ok.set('Cumplimiento registrado.');
     } catch (e) { this.error.set((e as Error).message); }
   }

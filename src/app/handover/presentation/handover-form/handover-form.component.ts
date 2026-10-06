@@ -11,6 +11,7 @@ import { MedicalOrdersStore } from '../../../medical-orders/application/medical-
 import { ClinicalEventsStore } from '../../../clinical-events/application/clinical-events.store';
 import { CurrentUser } from '../../../iam/domain/model/current-user';
 import { DirectoryStore } from '../../../iam/application/directory.store';
+import { Permissions, Permiso } from '../../../iam/application/permissions';
 import { PatientId, UserId } from '../../../shared/domain/model/identifier';
 import { ChipComponent } from '../../../shared/presentation/risk-chip.component';
 import { EmptyStateComponent } from '../../../shared/presentation/empty-state.component';
@@ -54,9 +55,13 @@ import { HANDOVER_STATUS_LABEL, HANDOVER_STATUS_TONE } from '../../../shared/pre
             <div><dt>Recomendacion</dt><dd>{{ h.content.recommendation }}</dd></div>
           </dl>
           @if (h.isPending) {
-            <button type="button" class="btn btn--primary btn--sm" (click)="acusar(h)">
-              Acusar recibo<span class="sr-only"> del traspaso de {{ patients.nameOf(h.patientId.value) }}</span>
-            </button>
+            @if (permisoAcusar(h); as permiso) {
+              <button type="button" class="btn btn--primary btn--sm"
+                      [disabled]="!permiso.permitido" (click)="acusar(h)">
+                Acusar recibo<span class="sr-only"> del traspaso de {{ patients.nameOf(h.patientId.value) }}</span>
+              </button>
+              @if (!permiso.permitido) { <p class="motivo">{{ permiso.motivo }}</p> }
+            }
           } @else {
             <p class="muted" style="font-size:.8rem;margin:0">
               Acusado el {{ h.acknowledgedAt | date:'dd/MM/yyyy HH:mm' }}.
@@ -71,11 +76,17 @@ import { HANDOVER_STATUS_LABEL, HANDOVER_STATUS_TONE } from '../../../shared/pre
 
     <form class="card" (ngSubmit)="emitir()" novalidate>
       <h2>Emitir traspaso &middot; US-13 y US-16</h2>
+      @if (!puedeEmitir().permitido) {
+        <p class="notice notice--info">
+          {{ puedeEmitir().motivo }}
+          La regla vive en el agregado Handover, no en esta pantalla: aqui solo se adelanta su explicacion.
+        </p>
+      }
 
       <div class="form-grid">
         <div class="field">
           <label for="h-paciente">Paciente</label>
-          <select id="h-paciente" name="hPaciente" [(ngModel)]="pacienteId">
+          <select id="h-paciente" name="hPaciente" [(ngModel)]="pacienteId" [disabled]="!puedeEmitir().permitido">
             @for (p of patients.patients(); track p.id.value) {
               <option [value]="p.id.value">{{ p.fullName }} &mdash; {{ p.location.toString() }}</option>
             }
@@ -83,7 +94,7 @@ import { HANDOVER_STATUS_LABEL, HANDOVER_STATUS_TONE } from '../../../shared/pre
         </div>
         <div class="field">
           <label for="h-entrante">Enfermero entrante</label>
-          <select id="h-entrante" name="hEntrante" [(ngModel)]="entranteId">
+          <select id="h-entrante" name="hEntrante" [(ngModel)]="entranteId" [disabled]="!puedeEmitir().permitido">
             <option value="">Selecciona</option>
             @for (u of entrantesPosibles(); track u.id) {
               <option [value]="u.id">{{ u.fullName }}@if (u.shift) { &mdash; {{ u.shift }} }</option>
@@ -94,7 +105,7 @@ import { HANDOVER_STATUS_LABEL, HANDOVER_STATUS_TONE } from '../../../shared/pre
       </div>
 
       <div class="form-actions" style="margin-bottom:.8rem">
-        <button type="button" class="btn btn--secondary" (click)="prellenar()">
+        <button type="button" class="btn btn--secondary" [disabled]="!puedeEmitir().permitido" (click)="prellenar()">
           Pre-llenar con lo registrado
         </button>
         <span class="muted" style="font-size:.8rem">
@@ -105,23 +116,23 @@ import { HANDOVER_STATUS_LABEL, HANDOVER_STATUS_TONE } from '../../../shared/pre
 
       <div class="field">
         <label for="s">Situacion</label>
-        <textarea id="s" name="s" [(ngModel)]="situacion" required></textarea>
+        <textarea id="s" name="s" [disabled]="!puedeEmitir().permitido" [(ngModel)]="situacion" required></textarea>
       </div>
       <div class="field">
         <label for="b">Antecedentes</label>
-        <textarea id="b" name="b" [(ngModel)]="antecedentes" required></textarea>
+        <textarea id="b" name="b" [disabled]="!puedeEmitir().permitido" [(ngModel)]="antecedentes" required></textarea>
       </div>
       <div class="field">
         <label for="a">Evaluacion</label>
-        <textarea id="a" name="a" [(ngModel)]="evaluacion" required></textarea>
+        <textarea id="a" name="a" [disabled]="!puedeEmitir().permitido" [(ngModel)]="evaluacion" required></textarea>
       </div>
       <div class="field">
         <label for="r">Recomendacion</label>
-        <textarea id="r" name="r" [(ngModel)]="recomendacion" required></textarea>
+        <textarea id="r" name="r" [disabled]="!puedeEmitir().permitido" [(ngModel)]="recomendacion" required></textarea>
       </div>
 
       <div class="form-actions">
-        <button type="submit" class="btn btn--primary">Emitir traspaso</button>
+        <button type="submit" class="btn btn--primary" [disabled]="!puedeEmitir().permitido">Emitir traspaso</button>
       </div>
     </form>
 
@@ -164,12 +175,14 @@ import { HANDOVER_STATUS_LABEL, HANDOVER_STATUS_TONE } from '../../../shared/pre
     .sbar__body { display:grid; gap:.5rem; margin:0 0 .8rem; }
     .sbar__body dt { font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; color:var(--cs-ink-3); font-weight:600; }
     .sbar__body dd { margin:0; font-size:.86rem; }
+    .motivo { font-size:.76rem; color:var(--cs-ink-2); margin:.4rem 0 0; max-width:60ch; }
   `],
 })
 export class HandoverFormComponent {
   readonly store = inject(HandoverStore);
   readonly patients = inject(PatientsStore);
   readonly directory = inject(DirectoryStore);
+  readonly permisos = inject(Permissions);
   readonly user = inject(CurrentUser);
   private readonly vitals = inject(VitalSignsStore);
   private readonly alerts = inject(AlertsStore);
@@ -186,6 +199,11 @@ export class HandoverFormComponent {
 
   readonly recibidos = computed(() => this.store.receivedBy(this.user.id().value));
   entrantesPosibles() { return this.directory.nursesOtherThan(this.user.id().value); }
+
+  puedeEmitir(): Permiso { return this.permisos.emitirTraspaso(); }
+  permisoAcusar(h: Handover): Permiso {
+    return this.permisos.acusarTraspaso(h.incomingNurseId.value, !h.isPending);
+  }
 
   tono(s: string) { return HANDOVER_STATUS_TONE[s] ?? 'neutral'; }
   etiqueta(s: string) { return HANDOVER_STATUS_LABEL[s] ?? s; }
@@ -238,7 +256,7 @@ export class HandoverFormComponent {
     this.error.set(''); this.ok.set('');
     try {
       this.store.issue(
-        PatientId.of(this.pacienteId), this.user.id(), UserId.of(this.entranteId),
+        PatientId.of(this.pacienteId), this.user.id(), this.user.role(), UserId.of(this.entranteId),
         SbarContent.of(this.situacion, this.antecedentes, this.evaluacion, this.recomendacion),
       );
       this.ok.set('Traspaso emitido. Queda pendiente del acuse del enfermero entrante.');

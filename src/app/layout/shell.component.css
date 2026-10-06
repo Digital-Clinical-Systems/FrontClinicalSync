@@ -58,3 +58,21 @@
   .content { padding: 1.1rem; }
   .topbar__unit { display: none; }
 }
+
+.identity__help {
+  font: inherit; font-size: .78rem; font-weight: 600; color: #fff;
+  background: transparent; border: 1px solid #44557a; border-radius: 6px;
+  padding: .25rem .55rem; cursor: pointer;
+}
+.identity__help:hover { background: #1e3a8a; }
+.identity__help:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+.capacidades {
+  background: #eff6ff; border-bottom: 1px solid #bfdbfe;
+  padding: .9rem 1.25rem; color: #1e3a8a;
+}
+.capacidades__titulo { font-weight: 700; font-size: .85rem; margin: 0 0 .4rem; }
+.capacidades ul { margin: 0 0 .6rem; padding-left: 1.1rem; font-size: .84rem; columns: 2; column-gap: 2rem; }
+.capacidades li { margin-bottom: .15rem; break-inside: avoid; }
+.capacidades__nota { font-size: .78rem; margin: 0; max-width: 95ch; color: #1e40af; }
+@media (max-width: 760px) { .capacidades ul { columns: 1; } }
