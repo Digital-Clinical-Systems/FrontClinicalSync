@@ -20,7 +20,19 @@ export class ClinicalApi {
 
   async list<T>(resource: string): Promise<T[]> {
     try {
-      return await firstValueFrom(this.http.get<T[]>(`${this.base}/${resource}`));
+      const respuesta = await firstValueFrom(this.http.get<T[]>(`${this.base}/${resource}`));
+      // Una respuesta que no es una coleccion significa que la peticion no llego
+      // al recurso: tipicamente una regla de reescritura que devolvio el HTML de
+      // la aplicacion o el indice del servicio. Se registra de forma explicita
+      // porque el sintoma visible seria una pantalla vacia sin ningun error, que
+      // es el fallo mas caro de diagnosticar.
+      if (!Array.isArray(respuesta)) {
+        console.error(
+          `[ClinicalApi] ${this.base}/${resource} no devolvio una coleccion. `
+          + 'Revise que la ruta /api llegue a la funcion y no a la aplicacion.', respuesta);
+        return [];
+      }
+      return respuesta;
     } catch (error) {
       console.error(`[ClinicalApi] no se pudo leer ${resource}`, error);
       return [];
