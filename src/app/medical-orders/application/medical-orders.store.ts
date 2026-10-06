@@ -43,8 +43,8 @@ export class MedicalOrdersStore {
   }
 
   /** US-24. */
-  fulfill(order: MedicalOrder, by: UserId): void {
-    order.fulfill(by);
+  fulfill(order: MedicalOrder, by: UserId, byRole: Role): void {
+    order.fulfill(by, byRole);
     this.orders.update(l => [...l]);
     this.repo.save(order);
     for (const e of order.pullEvents()) this.bus.publish(e);

@@ -1,14 +1,15 @@
 import { AggregateRoot } from '../../../shared/domain/model/aggregate-root';
 import { domainEvent } from '../../../shared/domain/events/domain-event';
 import { PatientId, UserId } from '../../../shared/domain/model/identifier';
+import { Role } from '../../../iam/domain/model/role.enum';
 import { SbarContent } from './sbar-content.vo';
 import { HandoverStatus } from './handover-status.enum';
 
 /**
  * Aggregate Root de BC-05.
- * Invariantes: las cuatro secciones SBAR completas; el enfermero entrante es
- * distinto del saliente; el acuse de recibo lo registra solo el entrante y una
- * sola vez.
+ * Invariantes: las cuatro secciones SBAR completas; el traspaso lo emite
+ * enfermeria, que es quien entrega el turno; el enfermero entrante es distinto
+ * del saliente; el acuse de recibo lo registra solo el entrante y una sola vez.
  */
 export class Handover extends AggregateRoot {
   readonly id: string;
@@ -30,8 +31,15 @@ export class Handover extends AggregateRoot {
   }
 
   static issue(
-    patientId: PatientId, outgoingNurseId: UserId, incomingNurseId: UserId, content: SbarContent,
+    patientId: PatientId, outgoingNurseId: UserId, outgoingRole: Role,
+    incomingNurseId: UserId, content: SbarContent,
   ): Handover {
+    // El traspaso SBAR es la entrega del turno de enfermeria. Un medico no
+    // entrega turno de enfermeria: emitirlo desde otro rol produciria un
+    // documento que nadie esta obligado a recibir.
+    if (outgoingRole !== Role.Nurse) {
+      throw new Error('El traspaso SBAR lo emite el personal de enfermeria que entrega el turno');
+    }
     if (outgoingNurseId.equals(incomingNurseId)) {
       throw new Error('El enfermero entrante debe ser distinto del saliente: nadie se entrega el turno a si mismo');
     }

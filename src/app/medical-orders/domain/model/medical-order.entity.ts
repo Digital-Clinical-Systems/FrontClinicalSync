@@ -86,11 +86,16 @@ export class MedicalOrder extends AggregateRoot {
 
   /**
    * US-24. Enfermeria deja constancia de que ejecuto la indicacion.
-   * Invariantes: solo se cumple una indicacion vigente, una sola vez, y quien
-   * registra el cumplimiento no puede ser quien la prescribio, porque el valor
-   * del registro esta en que acredita que la orden llego a quien debia ejecutarla.
+   * Invariantes: solo se cumple una indicacion vigente, una sola vez, lo registra
+   * enfermeria —que es quien administra— y nunca quien la prescribio, porque el
+   * valor del registro esta en que acredita que la orden llego a quien debia
+   * ejecutarla. Si el prescriptor pudiera firmar su propio cumplimiento, el
+   * registro no probaria nada.
    */
-  fulfill(by: UserId, at: Date = new Date()): void {
+  fulfill(by: UserId, byRole: Role, at: Date = new Date()): void {
+    if (byRole !== Role.Nurse) {
+      throw new Error('El cumplimiento de una indicacion lo registra el personal de enfermeria que la administra');
+    }
     if (this._status !== OrderStatus.Active) {
       throw new Error('Solo una indicacion vigente admite registro de cumplimiento');
     }

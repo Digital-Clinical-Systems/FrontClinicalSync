@@ -4,6 +4,7 @@ import { HANDOVER_REPOSITORY } from '../domain/services/handover.repository';
 import { Handover } from '../domain/model/handover.entity';
 import { SbarContent } from '../domain/model/sbar-content.vo';
 import { PatientId, UserId } from '../../shared/domain/model/identifier';
+import { Role } from '../../iam/domain/model/role.enum';
 
 @Injectable({ providedIn: 'root' })
 export class HandoverStore {
@@ -26,8 +27,11 @@ export class HandoverStore {
     return this.forPatient(patientId)[0];
   }
 
-  issue(patientId: PatientId, outgoing: UserId, incoming: UserId, content: SbarContent): Handover {
-    const h = Handover.issue(patientId, outgoing, incoming, content);
+  issue(
+    patientId: PatientId, outgoing: UserId, outgoingRole: Role,
+    incoming: UserId, content: SbarContent,
+  ): Handover {
+    const h = Handover.issue(patientId, outgoing, outgoingRole, incoming, content);
     this.handovers.update(l => [h, ...l]);
     this.repo.save(h);
     for (const e of h.pullEvents()) this.bus.publish(e);

@@ -59,20 +59,26 @@ describe('MedicalOrder — registro de cumplimiento (US-24)', () => {
 
   it('registra el cumplimiento y publica el evento correspondiente', () => {
     const o = emitir(); o.pullEvents();
-    o.fulfill(enfermera);
+    o.fulfill(enfermera, Role.Nurse);
     expect(o.fulfilledBy?.value).toBe('enf-001');
     expect(o.pullEvents().map(e => e.name)).toContain('IndicacionMedicaCumplida');
   });
 
   it('no admite un segundo registro de cumplimiento', () => {
     const o = emitir();
-    o.fulfill(enfermera);
-    expect(() => o.fulfill(enfermera)).toThrowError(/ya tiene registrado su cumplimiento/);
+    o.fulfill(enfermera, Role.Nurse);
+    expect(() => o.fulfill(enfermera, Role.Nurse)).toThrowError(/ya tiene registrado su cumplimiento/);
   });
 
-  it('impide que quien prescribe registre su propio cumplimiento', () => {
+  it('impide que un medico registre un cumplimiento: lo administra enfermeria', () => {
     const o = emitir();
-    expect(() => o.fulfill(medico)).toThrowError(/no puede registrar su propio cumplimiento/);
+    expect(() => o.fulfill(medico, Role.Physician)).toThrowError(/personal de enfermeria que la administra/);
+  });
+
+  it('impide que quien prescribe registre su propio cumplimiento aunque sea enfermeria', () => {
+    const propia = MedicalOrder.issue(paciente, UserId.of('enf-001'), Role.Physician, dosis);
+    expect(() => propia.fulfill(enfermera, Role.Nurse))
+      .toThrowError(/no puede registrar el cumplimiento de una indicacion que tu|propio cumplimiento/i);
   });
 
   it('una indicacion reemplazada ya no admite cumplimiento', () => {
@@ -80,13 +86,13 @@ describe('MedicalOrder — registro de cumplimiento (US-24)', () => {
     const segunda = MedicalOrder.issue(paciente, medico, Role.Physician,
       Dosage.of('Furosemida', '40 mg', 'Via endovenosa', 'Cada 8 horas'));
     primera.supersede(segunda);
-    expect(() => primera.fulfill(enfermera)).toThrowError(/vigente/);
+    expect(() => primera.fulfill(enfermera, Role.Nurse)).toThrowError(/vigente/);
   });
 
   it('US-25: esta pendiente mientras sea vigente y nadie haya registrado su ejecucion', () => {
     const o = emitir();
     expect(o.isPending).toBeTrue();
-    o.fulfill(enfermera);
+    o.fulfill(enfermera, Role.Nurse);
     expect(o.isPending).toBeFalse();
   });
 });
