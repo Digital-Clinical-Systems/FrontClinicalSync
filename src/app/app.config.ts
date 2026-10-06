@@ -15,6 +15,8 @@ import { MEDICAL_ORDER_REPOSITORY } from './medical-orders/domain/services/medic
 import { MedicalOrderHttpRepository } from './medical-orders/infrastructure/medical-order-http.repository';
 import { AUDIT_LOG_REPOSITORY } from './audit/domain/services/audit-log.repository';
 import { AuditLogHttpRepository } from './audit/infrastructure/audit-log-http.repository';
+import { CLINICAL_EVENT_REPOSITORY } from './clinical-events/domain/services/clinical-event.repository';
+import { ClinicalEventHttpRepository } from './clinical-events/infrastructure/clinical-event-http.repository';
 import { USER_REPOSITORY } from './iam/domain/services/user.repository';
 import { UserHttpRepository } from './iam/infrastructure/user-http.repository';
 
@@ -24,6 +26,7 @@ import { VitalSignsStore } from './vital-signs/application/vital-signs.store';
 import { MedicalOrdersStore } from './medical-orders/application/medical-orders.store';
 import { HandoverStore } from './handover/application/handover.store';
 import { AlertsStore } from './alerts/application/alerts.store';
+import { ClinicalEventsStore } from './clinical-events/application/clinical-events.store';
 import { AuditStore } from './audit/application/audit.store';
 
 export const appConfig: ApplicationConfig = {
@@ -41,6 +44,7 @@ export const appConfig: ApplicationConfig = {
     { provide: ALERT_REPOSITORY, useClass: AlertHttpRepository },
     { provide: HANDOVER_REPOSITORY, useClass: HandoverHttpRepository },
     { provide: MEDICAL_ORDER_REPOSITORY, useClass: MedicalOrderHttpRepository },
+    { provide: CLINICAL_EVENT_REPOSITORY, useClass: ClinicalEventHttpRepository },
     { provide: AUDIT_LOG_REPOSITORY, useClass: AuditLogHttpRepository },
     { provide: USER_REPOSITORY, useClass: UserHttpRepository },
 
@@ -53,13 +57,14 @@ export const appConfig: ApplicationConfig = {
       const vitalSigns = inject(VitalSignsStore);
       const orders = inject(MedicalOrdersStore);
       const handovers = inject(HandoverStore);
+      const events = inject(ClinicalEventsStore);
 
       // La carga es independiente entre contextos: ninguno necesita el estado de
       // otro para reconstruirse, porque lo unico que cruza la frontera son
       // identificadores. Por eso se resuelven en paralelo.
       return Promise.all([
         directory.load(), patients.load(), vitalSigns.load(),
-        orders.load(), handovers.load(), alerts.load(), audit.load(),
+        orders.load(), handovers.load(), events.load(), alerts.load(), audit.load(),
       ]).then(() => undefined);
     }),
   ],

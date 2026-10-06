@@ -28,12 +28,13 @@ export class AlertsStore {
         PatientId.of(String(event.payload['patientId'])),
         level === 'CRITICAL' ? AlertSeverity.Critical : AlertSeverity.Warning,
         String(event.payload['triggerSource']),
-        `Nivel de riesgo evaluado como ${level}`,
+        String(event.payload['reason'] ?? 'Valor fuera de umbral'),
       );
       this.alerts.update(list => [alert, ...list]);
       this.repo.save(alert);
       for (const e of alert.pullEvents()) this.bus.publish(e);
     });
+    this.subscribeToClinicalEvents();
   }
 
   /** Carga las alertas ya generadas sin volver a dispararlas ni notificarlas. */
@@ -41,6 +42,25 @@ export class AlertsStore {
 
   openFor(patientId: string): Alert[] {
     return this.alerts().filter(a => a.patientId.value === patientId && a.status !== AlertStatus.Resolved);
+  }
+
+  /**
+   * Segunda fuente de alertas (BC-08). La politica es la misma, cambia el
+   * origen: `Alert.originLabel` ya distingue ambos prefijos para que la vista
+   * muestre de donde salio la alerta sin exponer el identificador tecnico.
+   */
+  private subscribeToClinicalEvents(): void {
+    this.bus.on('EventoClinicoCriticoRegistrado').subscribe(event => {
+      const alert = Alert.raise(
+        PatientId.of(String(event.payload['patientId'])),
+        AlertSeverity.Critical,
+        String(event.payload['triggerSource']),
+        String(event.payload['reason']),
+      );
+      this.alerts.update(list => [alert, ...list]);
+      this.repo.save(alert);
+      for (const e of alert.pullEvents()) this.bus.publish(e);
+    });
   }
 
   acknowledge(alert: Alert, by: UserId): void {

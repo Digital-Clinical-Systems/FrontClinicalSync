@@ -12,7 +12,15 @@
  */
 
 const HORA = 3600_000;
-const ORIGEN = new Date('2026-10-06T06:00:00-05:00').getTime();
+
+/**
+ * Las marcas de tiempo son relativas al momento en que se genera el archivo, no
+ * fechas fijas. Un conjunto de datos con fechas absolutas envejece: al cabo de
+ * unos dias todos los controles aparecerian vencidos y todas las alertas
+ * antiguas, y la aplicacion mostraria un turno que no se parece a ninguno real.
+ * Regenerar con `npm run seed` antes de desplegar mantiene el turno coherente.
+ */
+const ORIGEN = Date.now();
 const iso = (horasAtras) => new Date(ORIGEN - horasAtras * HORA).toISOString();
 
 const users = [
@@ -111,12 +119,18 @@ const vitalSigns = mediciones.map(([patientId, h, systolic, diastolic, heartRate
 const motivo = (v) => {
   const causas = [];
   if (v.oxygenSaturation < 90) causas.push(`saturacion de oxigeno en ${v.oxygenSaturation} %`);
+  else if (v.oxygenSaturation < 94) causas.push(`saturacion de oxigeno en descenso, ${v.oxygenSaturation} %`);
   if (v.heartRate > 130) causas.push(`frecuencia cardiaca en ${v.heartRate} lpm`);
+  else if (v.heartRate > 110) causas.push(`taquicardia de ${v.heartRate} lpm`);
   if (v.heartRate < 40) causas.push(`bradicardia de ${v.heartRate} lpm`);
+  else if (v.heartRate < 50) causas.push(`frecuencia cardiaca baja, ${v.heartRate} lpm`);
   if (v.systolic > 180) causas.push(`sistolica en ${v.systolic} mmHg`);
+  else if (v.systolic > 160) causas.push(`sistolica elevada, ${v.systolic} mmHg`);
   if (v.systolic < 90) causas.push(`hipotension con sistolica en ${v.systolic} mmHg`);
+  else if (v.systolic < 100) causas.push(`sistolica baja, ${v.systolic} mmHg`);
   if (v.meanArterialPressure < 65) causas.push(`presion arterial media en ${v.meanArterialPressure} mmHg`);
   if (v.temperature >= 39) causas.push(`temperatura en ${v.temperature} C`);
+  else if (v.temperature >= 38) causas.push(`febricula de ${v.temperature} C`);
   if (v.temperature < 35) causas.push(`hipotermia de ${v.temperature} C`);
   return causas.length ? `Valor fuera de umbral: ${causas.join('; ')}` : 'Valor fuera de umbral';
 };
@@ -134,11 +148,20 @@ const alerts = fueraDeUmbral.map((v, i) => {
     patientId: v.patientId,
     severity: v.riskLevel === 'CRITICAL' ? 'CRITICAL' : 'WARNING',
     triggerSource: `vital-sign:${v.id}`,
-    reason: v.riskLevel === 'CRITICAL' ? motivo(v) : `Nivel de riesgo evaluado como ${v.riskLevel}`,
+    reason: motivo(v),
     status: estado,
     raisedAt: v.measuredAt,
     acknowledgedBy: estado === 'OPEN' ? null : (n % 2 === 0 ? 'enf-001' : 'enf-002'),
   };
+});
+
+// El evento clinico critico tambien genera alerta, con el prefijo de origen
+// que `Alert.originLabel` traduce para la vista.
+alerts.push({
+  id: 'alr-900', patientId: 'pac-002', severity: 'CRITICAL',
+  triggerSource: 'clinical-event:cev-005',
+  reason: 'Episodio de desaturacion durante la movilizacion',
+  status: 'ACKNOWLEDGED', raisedAt: iso(13), acknowledgedBy: 'enf-001',
 });
 
 const medicalOrders = [
@@ -189,6 +212,24 @@ const handovers = [
   },
 ];
 
+// Anotaciones clinicas de BC-08: administraciones de medicamento (US-19) y
+// eventos clinicos relevantes del turno (US-20).
+const clinicalEvents = [
+  ['cev-001', 'pac-001', 'enf-002', 'MEDICATION_ADMINISTRATION', 'ROUTINE', 'Administracion matutina sin incidencias. Paciente tolera la via oral.', 'Acido acetilsalicilico', '100 mg', 'ord-001', 51],
+  ['cev-002', 'pac-001', 'enf-001', 'CLINICAL_OBSERVATION', 'NOTABLE', 'Refiere dolor toracico opresivo de intensidad 4 sobre 10 al incorporarse. Cede en reposo.', null, null, null, 29],
+  ['cev-003', 'pac-001', 'enf-001', 'MEDICATION_ADMINISTRATION', 'ROUTINE', 'Dosis nocturna administrada tras el ajuste indicado por el medico.', 'Enoxaparina', '60 mg', 'ord-003', 19],
+  ['cev-004', 'pac-002', 'enf-002', 'MEDICATION_ADMINISTRATION', 'ROUTINE', 'Diuretico administrado. Se inicia control horario de diuresis.', 'Furosemida', '20 mg', 'ord-004', 43],
+  ['cev-005', 'pac-002', 'enf-001', 'CLINICAL_OBSERVATION', 'CRITICAL', 'Episodio de desaturacion durante la movilizacion, con palidez y sudoracion. Se suspende el procedimiento y se avisa al medico de guardia.', null, null, null, 13],
+  ['cev-006', 'pac-004', 'enf-002', 'MEDICATION_ADMINISTRATION', 'ROUTINE', 'Estatina administrada con la cena.', 'Atorvastatina', '80 mg', 'ord-005', 39],
+  ['cev-007', 'pac-005', 'enf-001', 'MEDICATION_ADMINISTRATION', 'NOTABLE', 'Dosis unica de antiarritmico. Se monitoriza frecuencia durante la infusion.', 'Amiodarona', '150 mg', 'ord-006', 25],
+  ['cev-008', 'pac-006', 'enf-001', 'CLINICAL_OBSERVATION', 'NOTABLE', 'Herida operatoria con eritema perilesional leve, sin secrecion. Se registra para seguimiento del turno siguiente.', null, null, null, 11],
+  ['cev-009', 'pac-007', 'enf-002', 'MEDICATION_ADMINISTRATION', 'ROUTINE', 'Infusion iniciada segun indicacion, con control de presion cada quince minutos.', 'Nitroglicerina', '10 mcg/min', 'ord-007', 21],
+  ['cev-010', 'pac-007', 'enf-001', 'CLINICAL_OBSERVATION', 'ROUTINE', 'Mejora la mecanica respiratoria. Mantiene posicion semisentada y oxigeno por canula.', null, null, null, 8],
+].map(([id, patientId, recordedBy, type, severity, description, medication, dose, relatedOrderId, h]) => ({
+  id, patientId, recordedBy, type, severity, description,
+  medication, dose, relatedOrderId, occurredAt: iso(h),
+}));
+
 // La bitacora no se escribe a mano: se deriva de los eventos que cada operacion publico.
 const auditLogs = [];
 let seq = 0;
@@ -213,6 +254,12 @@ for (const o of medicalOrders) {
   anotar('NuevaIndicacionMedicaRegistrada', o.prescribedAt, o.patientId, o.prescribedBy, { orderId: o.id, replacesOrderId: o.replacesOrderId });
   if (o.status === 'SUPERSEDED') anotar('IndicacionMedicaReemplazada', o.prescribedAt, o.patientId, o.prescribedBy, { orderId: o.id, supersededBy: o.supersededBy });
 }
+for (const c of clinicalEvents) {
+  anotar('EventoClinicoRegistrado', c.occurredAt, c.patientId, c.recordedBy, { eventId: c.id, eventType: c.type, severity: c.severity });
+  if (c.severity === 'CRITICAL') {
+    anotar('EventoClinicoCriticoRegistrado', c.occurredAt, c.patientId, c.recordedBy, { eventId: c.id, triggerSource: `clinical-event:${c.id}` });
+  }
+}
 for (const h of handovers) {
   anotar('EntregaSbarRegistrada', h.issuedAt, h.patientId, h.outgoingNurseId, { handoverId: h.id, incomingNurseId: h.incomingNurseId });
   if (h.acknowledgedAt) anotar('AcuseDeReciboConfirmado', h.acknowledgedAt, h.patientId, h.incomingNurseId, { handoverId: h.id });
@@ -220,4 +267,4 @@ for (const h of handovers) {
 auditLogs.sort((a, b) => new Date(a.occurredAt) - new Date(b.occurredAt));
 
 process.stdout.write(JSON.stringify(
-  { users, patients, vitalSigns, alerts, medicalOrders, handovers, auditLogs }, null, 2) + '\n');
+  { users, patients, vitalSigns, alerts, medicalOrders, handovers, clinicalEvents, auditLogs }, null, 2) + '\n');
