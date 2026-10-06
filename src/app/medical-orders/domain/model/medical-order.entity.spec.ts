@@ -49,3 +49,44 @@ describe('MedicalOrder (BC-07) — invariantes del agregado', () => {
     expect(() => old.supersede(other)).toThrowError(/mismo paciente/);
   });
 });
+
+describe('MedicalOrder — registro de cumplimiento (US-24)', () => {
+  const paciente = PatientId.of('pac-001');
+  const medico = UserId.of('med-001');
+  const enfermera = UserId.of('enf-001');
+  const dosis = Dosage.of('Furosemida', '20 mg', 'Via endovenosa', 'Cada 8 horas');
+  const emitir = () => MedicalOrder.issue(paciente, medico, Role.Physician, dosis);
+
+  it('registra el cumplimiento y publica el evento correspondiente', () => {
+    const o = emitir(); o.pullEvents();
+    o.fulfill(enfermera);
+    expect(o.fulfilledBy?.value).toBe('enf-001');
+    expect(o.pullEvents().map(e => e.name)).toContain('IndicacionMedicaCumplida');
+  });
+
+  it('no admite un segundo registro de cumplimiento', () => {
+    const o = emitir();
+    o.fulfill(enfermera);
+    expect(() => o.fulfill(enfermera)).toThrowError(/ya tiene registrado su cumplimiento/);
+  });
+
+  it('impide que quien prescribe registre su propio cumplimiento', () => {
+    const o = emitir();
+    expect(() => o.fulfill(medico)).toThrowError(/no puede registrar su propio cumplimiento/);
+  });
+
+  it('una indicacion reemplazada ya no admite cumplimiento', () => {
+    const primera = emitir();
+    const segunda = MedicalOrder.issue(paciente, medico, Role.Physician,
+      Dosage.of('Furosemida', '40 mg', 'Via endovenosa', 'Cada 8 horas'));
+    primera.supersede(segunda);
+    expect(() => primera.fulfill(enfermera)).toThrowError(/vigente/);
+  });
+
+  it('US-25: esta pendiente mientras sea vigente y nadie haya registrado su ejecucion', () => {
+    const o = emitir();
+    expect(o.isPending).toBeTrue();
+    o.fulfill(enfermera);
+    expect(o.isPending).toBeFalse();
+  });
+});
