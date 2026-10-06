@@ -6,6 +6,7 @@ import { PatientId } from '../../shared/domain/model/identifier';
 @Injectable()
 export class VitalSignInMemoryRepository implements VitalSignRepository {
   private readonly records: VitalSignRecord[] = [];
+  load(): Promise<void> { return Promise.resolve(); }
   findAll(): VitalSignRecord[] { return [...this.records].reverse(); }
   findByPatient(id: PatientId): VitalSignRecord[] {
     return this.records.filter(r => r.patientId.equals(id)).reverse();

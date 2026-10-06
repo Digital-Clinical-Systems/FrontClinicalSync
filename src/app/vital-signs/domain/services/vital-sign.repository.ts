@@ -3,6 +3,7 @@ import { VitalSignRecord } from '../model/vital-sign-record.entity';
 import { PatientId } from '../../../shared/domain/model/identifier';
 
 export interface VitalSignRepository {
+  load(): Promise<void>;
   findByPatient(id: PatientId): VitalSignRecord[];
   findAll(): VitalSignRecord[];
   save(record: VitalSignRecord): void;

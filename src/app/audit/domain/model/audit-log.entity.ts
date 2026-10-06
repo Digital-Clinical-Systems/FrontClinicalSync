@@ -23,4 +23,19 @@ export class AuditLog {
     if (!actionType?.trim()) throw new Error('Toda entrada de auditoria requiere tipo de accion');
     return new AuditLog(crypto.randomUUID(), actionType, occurredAt, affectedResource, actorId, Object.freeze({ ...payload }));
   }
+
+  /**
+   * Reconstruye una entrada ya escrita. Conserva su identificador y su fecha
+   * originales: una bitacora append-only pierde su valor probatorio si al
+   * releerla cambia el momento en que ocurrio la accion.
+   */
+  static fromPersistence(snapshot: {
+    id: string; actionType: string; occurredAt: string | Date;
+    affectedResource: string; actorId: string; metadata?: Record<string, unknown>;
+  }): AuditLog {
+    return new AuditLog(
+      snapshot.id, snapshot.actionType, new Date(snapshot.occurredAt),
+      snapshot.affectedResource, snapshot.actorId, Object.freeze({ ...(snapshot.metadata ?? {}) }),
+    );
+  }
 }

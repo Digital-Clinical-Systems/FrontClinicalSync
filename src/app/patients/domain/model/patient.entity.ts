@@ -31,6 +31,29 @@ export class Patient extends AggregateRoot {
     return p;
   }
 
+  /**
+   * Reconstruye un paciente ya admitido a partir de lo que devuelve el
+   * repositorio. No publica eventos: el paciente no vuelve a ser admitido por
+   * el hecho de leerlo, y la bitacora de BC-06 no debe registrar una lectura
+   * como si fuera una accion clinica.
+   */
+  static fromPersistence(snapshot: {
+    id: string; medicalRecordNumber: string; fullName: string;
+    admissionDiagnosis: string; unit: string; bed: string;
+    admittedAt: string | Date; active?: boolean;
+  }): Patient {
+    const p = new Patient(
+      PatientId.of(snapshot.id),
+      snapshot.medicalRecordNumber,
+      snapshot.fullName,
+      snapshot.admissionDiagnosis,
+      BedLocation.of(snapshot.unit, snapshot.bed),
+      new Date(snapshot.admittedAt),
+    );
+    p._active = snapshot.active ?? true;
+    return p;
+  }
+
   discharge(): void {
     if (!this._active) throw new Error('El paciente ya fue dado de alta');
     this._active = false;

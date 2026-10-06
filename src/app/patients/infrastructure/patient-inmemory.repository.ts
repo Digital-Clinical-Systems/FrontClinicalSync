@@ -5,9 +5,9 @@ import { PatientId } from '../../shared/domain/model/identifier';
 import { BedLocation } from '../domain/model/bed-location.vo';
 
 /**
- * Adaptador en memoria. Sustituye al RESTful API mientras TS-02 no este
- * implementado: al existir el backend se reemplaza esta clase por un adaptador
- * HTTP sin tocar el dominio ni la capa de aplicacion.
+ * Adaptador en memoria. Se conserva como implementacion alternativa del mismo
+ * puerto: permite levantar la aplicacion sin la fake API y es el adaptador que
+ * usan las pruebas. El adaptador activo se decide en `app.config.ts`.
  */
 @Injectable()
 export class PatientInMemoryRepository implements PatientRepository {
@@ -15,6 +15,7 @@ export class PatientInMemoryRepository implements PatientRepository {
 
   constructor() { this.seed(); }
 
+  load(): Promise<void> { return Promise.resolve(); }
   findAll(): Patient[] { return [...this.store.values()].filter(p => p.isActive); }
   findById(id: PatientId): Patient | undefined { return this.store.get(id.value); }
   save(patient: Patient): void { this.store.set(patient.id.value, patient); }

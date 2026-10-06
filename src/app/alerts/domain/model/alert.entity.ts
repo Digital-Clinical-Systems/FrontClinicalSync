@@ -10,8 +10,8 @@ import { AlertStatus, AlertSeverity } from './alert-status.enum';
  * no retrocede de estado.
  */
 export class Alert extends AggregateRoot {
-  readonly id = crypto.randomUUID();
-  readonly raisedAt = new Date();
+  readonly id: string;
+  readonly raisedAt: Date;
   private _status = AlertStatus.Open;
   private _acknowledgedBy?: UserId;
 
@@ -20,7 +20,13 @@ export class Alert extends AggregateRoot {
     readonly severity: AlertSeverity,
     readonly triggerSource: string,
     readonly reason: string,
-  ) { super(); }
+    id?: string,
+    raisedAt?: Date,
+  ) {
+    super();
+    this.id = id ?? crypto.randomUUID();
+    this.raisedAt = raisedAt ?? new Date();
+  }
 
   static raise(patientId: PatientId, severity: AlertSeverity, triggerSource: string, reason: string): Alert {
     if (!triggerSource || !triggerSource.trim()) {
@@ -30,6 +36,27 @@ export class Alert extends AggregateRoot {
     a.record(domainEvent('AlertaCriticaGenerada', {
       alertId: a.id, patientId: patientId.value, severity, triggerSource,
     }));
+    return a;
+  }
+
+  /**
+   * Reconstruye una alerta ya generada, con el estado que alcanzo. No publica
+   * eventos y no pasa por las transiciones: una alerta resuelta hace dos dias
+   * no vuelve a abrirse ni a notificarse por el hecho de leerla.
+   */
+  static fromPersistence(snapshot: {
+    id: string; patientId: string; severity: AlertSeverity; triggerSource: string;
+    reason: string; status: AlertStatus; raisedAt: string | Date; acknowledgedBy?: string | null;
+  }): Alert {
+    if (!snapshot.triggerSource || !snapshot.triggerSource.trim()) {
+      throw new Error('Una alerta no puede existir sin el origen que la disparo');
+    }
+    const a = new Alert(
+      PatientId.of(snapshot.patientId), snapshot.severity, snapshot.triggerSource,
+      snapshot.reason, snapshot.id, new Date(snapshot.raisedAt),
+    );
+    a._status = snapshot.status;
+    a._acknowledgedBy = snapshot.acknowledgedBy ? UserId.of(snapshot.acknowledgedBy) : undefined;
     return a;
   }
 
