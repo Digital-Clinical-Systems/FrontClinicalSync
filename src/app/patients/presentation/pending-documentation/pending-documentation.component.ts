@@ -47,6 +47,10 @@ import { EmptyStateComponent } from '../../../shared/presentation/empty-state.co
             <li>
               <span class="pending__label">{{ item.label }}</span>
               <span class="pending__detail">{{ item.detail }}</span>
+              <a class="btn btn--secondary btn--sm" [routerLink]="item.accion.ruta"
+                 [queryParams]="{ paciente: row.patient.id.value }">
+                {{ item.accion.texto }}<span class="sr-only"> para {{ row.patient.fullName }}</span>
+              </a>
             </li>
           }
         </ul>
@@ -62,7 +66,7 @@ import { EmptyStateComponent } from '../../../shared/presentation/empty-state.co
     .pending { list-style:none; margin:0; padding:0; display:grid; gap:.55rem; }
     .pending li { border-left:3px solid var(--cs-warning); padding-left:.75rem; }
     .pending__label { display:block; font-weight:600; font-size:.88rem; }
-    .pending__detail { display:block; font-size:.82rem; color:var(--cs-ink-2); }
+    .pending__detail { display:block; font-size:.82rem; color:var(--cs-ink-2); margin-bottom:.35rem; }
   `],
 })
 export class PendingDocumentationComponent {

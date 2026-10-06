@@ -10,6 +10,7 @@ import { DirectoryStore } from '../../../iam/application/directory.store';
 import { ChipComponent } from '../../../shared/presentation/risk-chip.component';
 import { EmptyStateComponent } from '../../../shared/presentation/empty-state.component';
 import { ALERT_STATUS_LABEL, ALERT_STATUS_TONE, RISK_TONE, RISK_LABEL } from '../../../shared/presentation/risk';
+import { pacienteDeLaRuta } from '../../../shared/presentation/selected-patient';
 
 @Component({
   selector: 'cs-alert-list',
@@ -122,7 +123,7 @@ export class AlertListComponent {
 
   readonly error = signal('');
   private readonly estado = signal('PENDIENTES');
-  private readonly paciente = signal('');
+  private readonly paciente = signal(pacienteDeLaRuta());
 
   get filtroEstado(): string { return this.estado(); }
   set filtroEstado(v: string) { this.estado.set(v); }

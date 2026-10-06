@@ -7,6 +7,7 @@ import { DirectoryStore } from '../../../iam/application/directory.store';
 import { BloodPressure } from '../../domain/model/blood-pressure.vo';
 import { PatientId } from '../../../shared/domain/model/identifier';
 import { RISK_LABEL } from '../../../shared/presentation/risk';
+import { pacienteDeLaRuta } from '../../../shared/presentation/selected-patient';
 
 @Component({
   selector: 'cs-vital-sign-form',
@@ -68,7 +69,7 @@ export class VitalSignFormComponent {
   readonly user = inject(CurrentUser);
   readonly directory = inject(DirectoryStore);
 
-  private readonly _paciente = signal('');
+  private readonly _paciente = signal(pacienteDeLaRuta());
   get patientId(): string { return this._paciente() || (this.patients.patients()[0]?.id.value ?? ''); }
   set patientId(v: string) { this._paciente.set(v); }
 

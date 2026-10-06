@@ -13,6 +13,7 @@ import { DirectoryStore } from '../../../iam/application/directory.store';
 import { PatientId } from '../../../shared/domain/model/identifier';
 import { ChipComponent, ChipTone } from '../../../shared/presentation/risk-chip.component';
 import { EmptyStateComponent } from '../../../shared/presentation/empty-state.component';
+import { pacienteDeLaRuta } from '../../../shared/presentation/selected-patient';
 
 const SEVERITY_TONE: Record<string, ChipTone> = {
   ROUTINE: 'neutral', NOTABLE: 'warning', CRITICAL: 'critical',
@@ -149,7 +150,7 @@ export class ClinicalEventFormComponent {
   readonly gravedades = Object.values(ClinicalEventSeverity);
 
   private readonly _tipo = signal<ClinicalEventType>(ClinicalEventType.MedicationAdministration);
-  private readonly _paciente = signal('');
+  private readonly _paciente = signal(pacienteDeLaRuta());
   get tipo(): ClinicalEventType { return this._tipo(); }
   set tipo(v: ClinicalEventType) { this._tipo.set(v); }
   get pacienteId(): string { return this._paciente() || (this.patients.patients()[0]?.id.value ?? ''); }

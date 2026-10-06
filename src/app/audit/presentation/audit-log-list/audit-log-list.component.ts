@@ -5,6 +5,7 @@ import { AuditStore } from '../../application/audit.store';
 import { PatientsStore } from '../../../patients/application/patients.store';
 import { DirectoryStore } from '../../../iam/application/directory.store';
 import { EmptyStateComponent } from '../../../shared/presentation/empty-state.component';
+import { pacienteDeLaRuta } from '../../../shared/presentation/selected-patient';
 
 /** Traduccion del nombre tecnico del evento al vocabulario del turno (seccion 2.5). */
 const ACCION_LEGIBLE: Record<string, string> = {
@@ -107,7 +108,7 @@ export class AuditLogListComponent {
   readonly patients = inject(PatientsStore);
   readonly directory = inject(DirectoryStore);
 
-  private readonly paciente = signal('');
+  private readonly paciente = signal(pacienteDeLaRuta());
   private readonly accion = signal('');
   private readonly actor = signal('');
   get filtroPaciente(): string { return this.paciente(); }

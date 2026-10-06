@@ -26,6 +26,12 @@ export interface PendingItem {
   readonly code: string;
   readonly label: string;
   readonly detail: string;
+  /**
+   * Pantalla que resuelve el pendiente, con el paciente ya seleccionado. Un
+   * listado de tareas que no lleva al lugar donde se hacen obliga a navegar a
+   * mano y a volver a elegir el paciente en cada formulario.
+   */
+  readonly accion: { readonly ruta: string; readonly texto: string };
 }
 
 export interface ShiftRow {
@@ -78,33 +84,39 @@ export function buildShiftBoard(input: BoardInput): ShiftRow[] {
     // US-21. Lo que falta registrar, con el motivo explicito: una lista de
     // pendientes sin razon obliga a adivinar que hacer con ella.
     const pending: PendingItem[] = [];
+    const registrar = { ruta: '/signos-vitales', texto: 'Registrar signos vitales' };
     if (!latest) {
       pending.push({
         code: 'sin-control', label: 'Sin control de signos vitales',
         detail: 'El paciente no tiene ninguna medicion registrada en el sistema.',
+        accion: registrar,
       });
     } else if (hoursSinceControl !== null && hoursSinceControl > CONTROL_INTERVAL_HOURS) {
       pending.push({
         code: 'control-vencido', label: 'Control de signos vitales vencido',
         detail: `Ultima medicion hace ${Math.floor(hoursSinceControl)} horas; el intervalo definido es de ${CONTROL_INTERVAL_HOURS} horas.`,
+        accion: registrar,
       });
     }
     for (const order of pendingOrders) {
       pending.push({
         code: `indicacion-${order.id}`, label: 'Indicacion sin cumplimiento registrado',
         detail: `${order.dosage.medication} ${order.dosage.dose} (${order.dosage.frequency}).`,
+        accion: { ruta: '/indicaciones', texto: 'Ver la indicacion' },
       });
     }
     if (handoverPending) {
       pending.push({
         code: 'traspaso-sin-acuse', label: 'Traspaso sin acuse de recibo',
         detail: 'El enfermero entrante todavia no confirmo haber recibido el traspaso.',
+        accion: { ruta: '/traspasos', texto: 'Ver el traspaso' },
       });
     }
     if (alerts.some(a => a.status === AlertStatus.Open)) {
       pending.push({
         code: 'alerta-abierta', label: 'Alerta sin atender',
         detail: 'Hay al menos una alerta abierta que nadie ha tomado.',
+        accion: { ruta: '/alertas', texto: 'Atender la alerta' },
       });
     }
     if (latest && latest.riskLevel !== RiskLevel.Normal
@@ -112,6 +124,7 @@ export function buildShiftBoard(input: BoardInput): ShiftRow[] {
       pending.push({
         code: 'sin-anotacion', label: 'Valor fuera de umbral sin anotacion',
         detail: 'La ultima medicion salio de rango y no hay ninguna anotacion clinica posterior que explique que se hizo.',
+        accion: { ruta: '/registros', texto: 'Anotar lo que se hizo' },
       });
     }
 
