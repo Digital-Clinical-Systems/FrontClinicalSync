@@ -266,5 +266,20 @@ for (const h of handovers) {
 }
 auditLogs.sort((a, b) => new Date(a.occurredAt) - new Date(b.occurredAt));
 
+/**
+ * `generatedAt` es el ancla temporal del conjunto. La fake API lo usa para
+ * recalcular las marcas de tiempo respecto del momento de la consulta, de modo
+ * que el turno de demostracion se mantiene coherente aunque la aplicacion se
+ * revise semanas despues de haberse desplegado. Sin esa referencia, un conjunto
+ * de datos fijo envejece: a los pocos dias todos los controles figurarian
+ * vencidos y la pantalla de documentacion pendiente mostraria un servicio
+ * abandonado en lugar de un turno en marcha.
+ */
+const meta = {
+  generatedAt: new Date(ORIGEN).toISOString(),
+  descripcion: 'Datos ficticios de demostracion de ClinicalSync. Ningun dato corresponde a una persona real.',
+  generadoPor: 'tools/seed-db.mjs',
+};
+
 process.stdout.write(JSON.stringify(
-  { users, patients, vitalSigns, alerts, medicalOrders, handovers, clinicalEvents, auditLogs }, null, 2) + '\n');
+  { meta, users, patients, vitalSigns, alerts, medicalOrders, handovers, clinicalEvents, auditLogs }, null, 2) + '\n');
