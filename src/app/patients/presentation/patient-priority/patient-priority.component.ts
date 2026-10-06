@@ -1,103 +1,82 @@
-import { Component, inject, computed } from '@angular/core';
-import { DatePipe } from '@angular/common';
-import { PatientsStore } from '../../application/patients.store';
-import { VitalSignsStore } from '../../../vital-signs/application/vital-signs.store';
-import { AlertsStore } from '../../../alerts/application/alerts.store';
-import { RiskLevel } from '../../../vital-signs/domain/model/risk-level.enum';
-import { AlertStatus } from '../../../alerts/domain/model/alert-status.enum';
+import { Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { ShiftBoardFacade } from '../shift-board.facade';
+import { ChipComponent } from '../../../shared/presentation/risk-chip.component';
+import { EmptyStateComponent } from '../../../shared/presentation/empty-state.component';
+import { RISK_TONE, RISK_LABEL } from '../../../shared/presentation/risk';
 
-const ORDEN: Record<string, number> = {
-  [RiskLevel.Critical]: 0,
-  [RiskLevel.Warning]: 1,
-  [RiskLevel.Normal]: 2,
-  'SIN_DATOS': 3,
-};
-
-/**
- * US-28 y US-29 — Priorizacion de pacientes por riesgo (BG-03).
- *
- * Responde al hallazgo H-I de la seccion 2.2.3: la medica entrevistada relato
- * que en guardias de madrugada debe decidir a quien atender primero con
- * informacion incompleta. Esta vista ordena por el riesgo derivado del ultimo
- * registro de signos vitales y no por el orden de admision.
- *
- * El orden es una proyeccion de lectura: no toca el dominio de Vital Signs ni
- * el de Alerts, solo lee sus capas de aplicacion.
- */
 @Component({
   selector: 'cs-patient-priority',
   standalone: true,
-  imports: [DatePipe],
+  imports: [RouterLink, ChipComponent, EmptyStateComponent],
   template: `
-    <h1>Pacientes por prioridad</h1>
-    <p class="hint">
-      Ordenados por el nivel de riesgo del ultimo registro de signos vitales, no por
-      orden de admision. Un paciente sin registros en el turno aparece al final y se
-      marca como tal: la ausencia de dato no es lo mismo que un dato normal.
-    </p>
+    <header class="page-head">
+      <h1>Pacientes por prioridad</h1>
+      <p class="lead">
+        US-29. El orden lo deriva el sistema del nivel de riesgo de la ultima medicion;
+        a igual riesgo pesa el numero de alertas sin cerrar y, despues, el tiempo transcurrido
+        sin control. Nadie asigna la prioridad a mano.
+      </p>
+    </header>
 
-    <ol class="list">
-      @for (fila of priorizados(); track fila.patientId) {
-        <li class="item" [class]="'item--' + fila.riesgo.toLowerCase()">
-          <span class="pos">{{ $index + 1 }}</span>
-          <div class="info">
-            <strong>{{ fila.nombre }}</strong>
-            <p class="meta">{{ fila.cama }} &middot; {{ fila.diagnostico }}</p>
-            @if (fila.ultimaMedicion) {
-              <p class="meta">
-                Ultimo registro {{ fila.ultimaMedicion | date:'HH:mm' }} &middot;
-                PA {{ fila.presion }} &middot; FC {{ fila.frecuencia }} &middot; SpO2 {{ fila.saturacion }}%
-              </p>
-            } @else {
-              <p class="meta meta--sin-datos">Sin registros en este turno</p>
-            }
+    <ol class="priority">
+      @for (row of board.byPriority(); track row.patient.id.value; let i = $index) {
+        <li class="card prio" [class.prio--critical]="row.risk === 'CRITICAL'"
+                              [class.prio--warning]="row.risk === 'WARNING'">
+          <span class="prio__rank" aria-hidden="true">{{ i + 1 }}</span>
+          <div class="prio__body">
+            <div class="prio__head">
+              <h2>{{ row.patient.fullName }}</h2>
+              @if (row.risk) {
+                <cs-chip [tone]="tone(row.risk)" [label]="label(row.risk)" />
+              } @else {
+                <cs-chip tone="neutral" label="Sin medicion" />
+              }
+            </div>
+            <p class="muted" style="font-size:.84rem;margin:0 0 .5rem">
+              {{ row.patient.location.toString() }} &middot; {{ row.patient.admissionDiagnosis }}
+            </p>
+            <p class="reason">{{ motivo(row) }}</p>
           </div>
-          <div class="estado">
-            <span class="tag" [class]="'tag--' + fila.riesgo.toLowerCase()">{{ etiqueta(fila.riesgo) }}</span>
-            @if (fila.alertasAbiertas > 0) {
-              <span class="alertas">{{ fila.alertasAbiertas }} alerta(s) abierta(s)</span>
-            }
-          </div>
+          <a class="btn btn--secondary btn--sm" [routerLink]="['/resumen-paciente']"
+             [queryParams]="{ paciente: row.patient.id.value }">
+            Ver resumen<span class="sr-only"> de {{ row.patient.fullName }}</span>
+          </a>
         </li>
+      } @empty {
+        <cs-empty title="No hay pacientes en el turno" />
       }
     </ol>
   `,
-  styleUrl: './patient-priority.component.css',
+  styles: [`
+    .priority { list-style:none; margin:0; padding:0; }
+    .prio { display:flex; gap:1rem; align-items:flex-start; border-left:4px solid var(--cs-border-strong); }
+    .prio--critical { border-left-color: var(--cs-critical); }
+    .prio--warning  { border-left-color: var(--cs-warning); }
+    .prio__rank { font-size:1.3rem; font-weight:700; color:var(--cs-ink-3); min-width:1.5rem; font-variant-numeric:tabular-nums; }
+    .prio__body { flex:1; min-width:0; }
+    .prio__head { display:flex; flex-wrap:wrap; align-items:center; gap:.6rem; margin-bottom:.15rem; }
+    .prio__head h2 { margin:0; font-size:1rem; }
+    .reason { font-size:.85rem; color:var(--cs-ink-2); margin:0; }
+  `],
 })
 export class PatientPriorityComponent {
-  private readonly patients = inject(PatientsStore);
-  private readonly vitalSigns = inject(VitalSignsStore);
-  private readonly alerts = inject(AlertsStore);
+  readonly board = inject(ShiftBoardFacade);
+  tone(r: string) { return RISK_TONE[r] ?? 'neutral'; }
+  label(r: string) { return RISK_LABEL[r] ?? r; }
 
-  readonly priorizados = computed(() => {
-    const registros = this.vitalSigns.records();
-    const abiertas = this.alerts.alerts().filter(a => a.status === AlertStatus.Open);
-
-    return this.patients.patients()
-      .map(p => {
-        const ultimo = registros.find(r => r.patientId.value === p.id.value);
-        return {
-          patientId: p.id.value,
-          nombre: p.fullName,
-          cama: p.location.toString(),
-          diagnostico: p.admissionDiagnosis,
-          riesgo: ultimo ? ultimo.riskLevel : 'SIN_DATOS',
-          ultimaMedicion: ultimo?.measuredAt,
-          presion: ultimo?.bloodPressure.toString() ?? '-',
-          frecuencia: ultimo?.heartRate ?? '-',
-          saturacion: ultimo?.oxygenSaturation ?? '-',
-          alertasAbiertas: abiertas.filter(a => a.patientId.value === p.id.value).length,
-        };
-      })
-      .sort((a, b) => {
-        const porRiesgo = ORDEN[a.riesgo] - ORDEN[b.riesgo];
-        if (porRiesgo !== 0) return porRiesgo;
-        // a igual riesgo, primero quien tiene mas alertas abiertas
-        return b.alertasAbiertas - a.alertasAbiertas;
-      });
-  });
-
-  etiqueta(riesgo: string): string {
-    return riesgo === 'SIN_DATOS' ? 'SIN DATOS' : riesgo;
+  motivo(row: { risk: string | null; openAlerts: number; hoursSinceControl: number | null }): string {
+    const partes: string[] = [];
+    if (row.risk === 'CRITICAL') partes.push('la ultima medicion salio del rango critico');
+    else if (row.risk === 'WARNING') partes.push('la ultima medicion esta fuera del rango habitual');
+    else if (row.risk === 'NORMAL') partes.push('la ultima medicion esta dentro de rango');
+    else partes.push('no tiene ninguna medicion registrada');
+    if (row.openAlerts > 0) {
+      partes.push(`${row.openAlerts} alerta${row.openAlerts > 1 ? 's' : ''} sin cerrar`);
+    }
+    if (row.hoursSinceControl !== null && row.hoursSinceControl > 6) {
+      partes.push(`${Math.floor(row.hoursSinceControl)} horas sin control`);
+    }
+    return partes.join(' · ');
   }
 }

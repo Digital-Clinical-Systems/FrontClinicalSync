@@ -4,7 +4,7 @@ export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'pacientes' },
   {
     path: 'pacientes',
-    title: 'Mis pacientes | ClinicalSync',
+    title: 'Pacientes del turno | ClinicalSync',
     loadComponent: () => import('./patients/presentation/patient-list/patient-list.component')
       .then(m => m.PatientListComponent),
   },
@@ -19,6 +19,12 @@ export const routes: Routes = [
     title: 'Signos vitales | ClinicalSync',
     loadComponent: () => import('./vital-signs/presentation/vital-signs-dashboard/vital-signs-dashboard.component')
       .then(m => m.VitalSignsDashboardComponent),
+  },
+  {
+    path: 'registros',
+    title: 'Registros del turno | ClinicalSync',
+    loadComponent: () => import('./clinical-events/presentation/clinical-event-form/clinical-event-form.component')
+      .then(m => m.ClinicalEventFormComponent),
   },
   {
     path: 'resumen-paciente',
@@ -40,13 +46,19 @@ export const routes: Routes = [
   },
   {
     path: 'alertas',
-    title: 'Alertas | ClinicalSync',
+    title: 'Alertas clinicas | ClinicalSync',
     loadComponent: () => import('./alerts/presentation/alert-list/alert-list.component')
       .then(m => m.AlertListComponent),
   },
   {
+    path: 'pendientes',
+    title: 'Documentacion pendiente | ClinicalSync',
+    loadComponent: () => import('./patients/presentation/pending-documentation/pending-documentation.component')
+      .then(m => m.PendingDocumentationComponent),
+  },
+  {
     path: 'auditoria',
-    title: 'Auditoria | ClinicalSync',
+    title: 'Bitacora de auditoria | ClinicalSync',
     loadComponent: () => import('./audit/presentation/audit-log-list/audit-log-list.component')
       .then(m => m.AuditLogListComponent),
   },
