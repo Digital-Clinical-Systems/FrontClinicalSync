@@ -1,0 +1,2208 @@
+{
+  "users": [
+    {
+      "id": "enf-001",
+      "fullName": "Rocio Alarcon Vega",
+      "role": "NURSE",
+      "shift": "Turno dia"
+    },
+    {
+      "id": "enf-002",
+      "fullName": "Daniel Figueroa Ponce",
+      "role": "NURSE",
+      "shift": "Turno noche"
+    },
+    {
+      "id": "med-001",
+      "fullName": "Patricia Loayza Guerra",
+      "role": "PHYSICIAN",
+      "specialty": "Cardiologia"
+    },
+    {
+      "id": "med-002",
+      "fullName": "Fernando Chavez Ibarra",
+      "role": "PHYSICIAN",
+      "specialty": "Cardiologia intervencionista"
+    },
+    {
+      "id": "coord-001",
+      "fullName": "Miriam Tapia Cordova",
+      "role": "COORDINATOR",
+      "specialty": "Jefatura de enfermeria"
+    }
+  ],
+  "patients": [
+    {
+      "id": "pac-001",
+      "medicalRecordNumber": "HC-48201",
+      "fullName": "Lucia Mendoza Rivas",
+      "admissionDiagnosis": "Infarto agudo de miocardio con elevacion del ST",
+      "age": 68,
+      "unit": "UCI Cardiovascular",
+      "bed": "Cama 1",
+      "admittedAt": "2026-10-02T11:00:00.000Z",
+      "active": true
+    },
+    {
+      "id": "pac-002",
+      "medicalRecordNumber": "HC-48207",
+      "fullName": "Hector Salazar Nunez",
+      "admissionDiagnosis": "Insuficiencia cardiaca descompensada",
+      "age": 74,
+      "unit": "UCI Cardiovascular",
+      "bed": "Cama 2",
+      "admittedAt": "2026-10-02T17:00:00.000Z",
+      "active": true
+    },
+    {
+      "id": "pac-003",
+      "medicalRecordNumber": "HC-48219",
+      "fullName": "Rosa Aguirre Tello",
+      "admissionDiagnosis": "Post operada de revascularizacion miocardica",
+      "age": 61,
+      "unit": "UCI Cardiovascular",
+      "bed": "Cama 3",
+      "admittedAt": "2026-10-02T23:00:00.000Z",
+      "active": true
+    },
+    {
+      "id": "pac-004",
+      "medicalRecordNumber": "HC-48226",
+      "fullName": "Marco Quispe Linares",
+      "admissionDiagnosis": "Angina inestable",
+      "age": 57,
+      "unit": "UCI Cardiovascular",
+      "bed": "Cama 4",
+      "admittedAt": "2026-10-03T05:00:00.000Z",
+      "active": true
+    },
+    {
+      "id": "pac-005",
+      "medicalRecordNumber": "HC-48233",
+      "fullName": "Elena Caceres Pardo",
+      "admissionDiagnosis": "Fibrilacion auricular de alta respuesta ventricular",
+      "age": 70,
+      "unit": "UCI Cardiovascular",
+      "bed": "Cama 5",
+      "admittedAt": "2026-10-03T11:00:00.000Z",
+      "active": true
+    },
+    {
+      "id": "pac-006",
+      "medicalRecordNumber": "HC-48240",
+      "fullName": "Julio Ramos Bendezu",
+      "admissionDiagnosis": "Post operado de reemplazo valvular aortico",
+      "age": 65,
+      "unit": "UCI Cardiovascular",
+      "bed": "Cama 6",
+      "admittedAt": "2026-10-03T17:00:00.000Z",
+      "active": true
+    },
+    {
+      "id": "pac-007",
+      "medicalRecordNumber": "HC-48248",
+      "fullName": "Carmen Ventura Rojas",
+      "admissionDiagnosis": "Edema agudo de pulmon",
+      "age": 79,
+      "unit": "UCI Cardiovascular",
+      "bed": "Cama 7",
+      "admittedAt": "2026-10-03T23:00:00.000Z",
+      "active": true
+    },
+    {
+      "id": "pac-008",
+      "medicalRecordNumber": "HC-48255",
+      "fullName": "Alberto Ninahuanca Soto",
+      "admissionDiagnosis": "Sindrome coronario agudo sin elevacion del ST",
+      "age": 54,
+      "unit": "UCI Cardiovascular",
+      "bed": "Cama 8",
+      "admittedAt": "2026-10-04T05:00:00.000Z",
+      "active": true
+    }
+  ],
+  "vitalSigns": [
+    {
+      "id": "vs-001",
+      "patientId": "pac-001",
+      "recordedBy": "enf-002",
+      "systolic": 118,
+      "diastolic": 74,
+      "heartRate": 82,
+      "oxygenSaturation": 97,
+      "temperature": 36.6,
+      "meanArterialPressure": 89,
+      "riskLevel": "NORMAL",
+      "measuredAt": "2026-10-04T05:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-002",
+      "patientId": "pac-001",
+      "recordedBy": "enf-002",
+      "systolic": 126,
+      "diastolic": 78,
+      "heartRate": 88,
+      "oxygenSaturation": 96,
+      "temperature": 36.8,
+      "meanArterialPressure": 94,
+      "riskLevel": "NORMAL",
+      "measuredAt": "2026-10-04T17:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-003",
+      "patientId": "pac-001",
+      "recordedBy": "enf-001",
+      "systolic": 138,
+      "diastolic": 84,
+      "heartRate": 104,
+      "oxygenSaturation": 94,
+      "temperature": 37.4,
+      "meanArterialPressure": 102,
+      "riskLevel": "NORMAL",
+      "measuredAt": "2026-10-05T05:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-004",
+      "patientId": "pac-001",
+      "recordedBy": "enf-001",
+      "systolic": 152,
+      "diastolic": 88,
+      "heartRate": 118,
+      "oxygenSaturation": 92,
+      "temperature": 37.9,
+      "meanArterialPressure": 109,
+      "riskLevel": "WARNING",
+      "measuredAt": "2026-10-05T17:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-005",
+      "patientId": "pac-001",
+      "recordedBy": "enf-001",
+      "systolic": 168,
+      "diastolic": 94,
+      "heartRate": 126,
+      "oxygenSaturation": 89,
+      "temperature": 38.4,
+      "meanArterialPressure": 119,
+      "riskLevel": "CRITICAL",
+      "measuredAt": "2026-10-06T05:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-006",
+      "patientId": "pac-002",
+      "recordedBy": "enf-002",
+      "systolic": 104,
+      "diastolic": 66,
+      "heartRate": 92,
+      "oxygenSaturation": 93,
+      "temperature": 36.4,
+      "meanArterialPressure": 79,
+      "riskLevel": "WARNING",
+      "measuredAt": "2026-10-04T09:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-007",
+      "patientId": "pac-002",
+      "recordedBy": "enf-002",
+      "systolic": 98,
+      "diastolic": 62,
+      "heartRate": 98,
+      "oxygenSaturation": 91,
+      "temperature": 36.5,
+      "meanArterialPressure": 74,
+      "riskLevel": "WARNING",
+      "measuredAt": "2026-10-04T21:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-008",
+      "patientId": "pac-002",
+      "recordedBy": "enf-001",
+      "systolic": 94,
+      "diastolic": 60,
+      "heartRate": 106,
+      "oxygenSaturation": 90,
+      "temperature": 36.7,
+      "meanArterialPressure": 71,
+      "riskLevel": "WARNING",
+      "measuredAt": "2026-10-05T09:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-009",
+      "patientId": "pac-002",
+      "recordedBy": "enf-001",
+      "systolic": 88,
+      "diastolic": 58,
+      "heartRate": 112,
+      "oxygenSaturation": 88,
+      "temperature": 36.9,
+      "meanArterialPressure": 68,
+      "riskLevel": "CRITICAL",
+      "measuredAt": "2026-10-05T21:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-010",
+      "patientId": "pac-002",
+      "recordedBy": "enf-001",
+      "systolic": 96,
+      "diastolic": 62,
+      "heartRate": 101,
+      "oxygenSaturation": 92,
+      "temperature": 36.8,
+      "meanArterialPressure": 73,
+      "riskLevel": "WARNING",
+      "measuredAt": "2026-10-06T07:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-011",
+      "patientId": "pac-003",
+      "recordedBy": "enf-002",
+      "systolic": 122,
+      "diastolic": 76,
+      "heartRate": 76,
+      "oxygenSaturation": 98,
+      "temperature": 36.5,
+      "meanArterialPressure": 91,
+      "riskLevel": "NORMAL",
+      "measuredAt": "2026-10-04T13:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-012",
+      "patientId": "pac-003",
+      "recordedBy": "enf-002",
+      "systolic": 124,
+      "diastolic": 78,
+      "heartRate": 74,
+      "oxygenSaturation": 98,
+      "temperature": 36.6,
+      "meanArterialPressure": 93,
+      "riskLevel": "NORMAL",
+      "measuredAt": "2026-10-05T01:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-013",
+      "patientId": "pac-003",
+      "recordedBy": "enf-001",
+      "systolic": 120,
+      "diastolic": 75,
+      "heartRate": 72,
+      "oxygenSaturation": 99,
+      "temperature": 36.4,
+      "meanArterialPressure": 90,
+      "riskLevel": "NORMAL",
+      "measuredAt": "2026-10-05T13:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-014",
+      "patientId": "pac-003",
+      "recordedBy": "enf-001",
+      "systolic": 118,
+      "diastolic": 74,
+      "heartRate": 70,
+      "oxygenSaturation": 98,
+      "temperature": 36.5,
+      "meanArterialPressure": 89,
+      "riskLevel": "NORMAL",
+      "measuredAt": "2026-10-06T01:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-015",
+      "patientId": "pac-004",
+      "recordedBy": "enf-002",
+      "systolic": 136,
+      "diastolic": 86,
+      "heartRate": 88,
+      "oxygenSaturation": 96,
+      "temperature": 36.7,
+      "meanArterialPressure": 103,
+      "riskLevel": "NORMAL",
+      "measuredAt": "2026-10-04T15:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-016",
+      "patientId": "pac-004",
+      "recordedBy": "enf-002",
+      "systolic": 142,
+      "diastolic": 88,
+      "heartRate": 94,
+      "oxygenSaturation": 95,
+      "temperature": 36.9,
+      "meanArterialPressure": 106,
+      "riskLevel": "NORMAL",
+      "measuredAt": "2026-10-05T03:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-017",
+      "patientId": "pac-004",
+      "recordedBy": "enf-001",
+      "systolic": 158,
+      "diastolic": 92,
+      "heartRate": 102,
+      "oxygenSaturation": 94,
+      "temperature": 37.1,
+      "meanArterialPressure": 114,
+      "riskLevel": "NORMAL",
+      "measuredAt": "2026-10-05T15:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-018",
+      "patientId": "pac-004",
+      "recordedBy": "enf-001",
+      "systolic": 164,
+      "diastolic": 96,
+      "heartRate": 108,
+      "oxygenSaturation": 93,
+      "temperature": 37.3,
+      "meanArterialPressure": 119,
+      "riskLevel": "WARNING",
+      "measuredAt": "2026-10-06T03:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-019",
+      "patientId": "pac-005",
+      "recordedBy": "enf-002",
+      "systolic": 128,
+      "diastolic": 80,
+      "heartRate": 128,
+      "oxygenSaturation": 95,
+      "temperature": 36.8,
+      "meanArterialPressure": 96,
+      "riskLevel": "WARNING",
+      "measuredAt": "2026-10-04T19:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-020",
+      "patientId": "pac-005",
+      "recordedBy": "enf-001",
+      "systolic": 124,
+      "diastolic": 78,
+      "heartRate": 136,
+      "oxygenSaturation": 94,
+      "temperature": 37,
+      "meanArterialPressure": 93,
+      "riskLevel": "CRITICAL",
+      "measuredAt": "2026-10-05T07:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-021",
+      "patientId": "pac-005",
+      "recordedBy": "enf-001",
+      "systolic": 118,
+      "diastolic": 74,
+      "heartRate": 142,
+      "oxygenSaturation": 93,
+      "temperature": 37.2,
+      "meanArterialPressure": 89,
+      "riskLevel": "CRITICAL",
+      "measuredAt": "2026-10-05T19:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-022",
+      "patientId": "pac-005",
+      "recordedBy": "enf-001",
+      "systolic": 122,
+      "diastolic": 76,
+      "heartRate": 112,
+      "oxygenSaturation": 95,
+      "temperature": 37,
+      "meanArterialPressure": 91,
+      "riskLevel": "WARNING",
+      "measuredAt": "2026-10-06T06:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-023",
+      "patientId": "pac-006",
+      "recordedBy": "enf-002",
+      "systolic": 126,
+      "diastolic": 78,
+      "heartRate": 80,
+      "oxygenSaturation": 97,
+      "temperature": 36.6,
+      "meanArterialPressure": 94,
+      "riskLevel": "NORMAL",
+      "measuredAt": "2026-10-04T23:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-024",
+      "patientId": "pac-006",
+      "recordedBy": "enf-001",
+      "systolic": 128,
+      "diastolic": 80,
+      "heartRate": 84,
+      "oxygenSaturation": 97,
+      "temperature": 37.5,
+      "meanArterialPressure": 96,
+      "riskLevel": "NORMAL",
+      "measuredAt": "2026-10-05T11:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-025",
+      "patientId": "pac-006",
+      "recordedBy": "enf-001",
+      "systolic": 130,
+      "diastolic": 82,
+      "heartRate": 90,
+      "oxygenSaturation": 96,
+      "temperature": 38.2,
+      "meanArterialPressure": 98,
+      "riskLevel": "WARNING",
+      "measuredAt": "2026-10-05T23:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-026",
+      "patientId": "pac-006",
+      "recordedBy": "enf-001",
+      "systolic": 132,
+      "diastolic": 84,
+      "heartRate": 96,
+      "oxygenSaturation": 95,
+      "temperature": 38.6,
+      "meanArterialPressure": 100,
+      "riskLevel": "WARNING",
+      "measuredAt": "2026-10-06T08:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-027",
+      "patientId": "pac-007",
+      "recordedBy": "enf-002",
+      "systolic": 148,
+      "diastolic": 92,
+      "heartRate": 110,
+      "oxygenSaturation": 90,
+      "temperature": 36.9,
+      "meanArterialPressure": 111,
+      "riskLevel": "WARNING",
+      "measuredAt": "2026-10-05T02:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-028",
+      "patientId": "pac-007",
+      "recordedBy": "enf-001",
+      "systolic": 156,
+      "diastolic": 96,
+      "heartRate": 118,
+      "oxygenSaturation": 87,
+      "temperature": 37.1,
+      "meanArterialPressure": 116,
+      "riskLevel": "CRITICAL",
+      "measuredAt": "2026-10-05T14:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-029",
+      "patientId": "pac-007",
+      "recordedBy": "enf-001",
+      "systolic": 144,
+      "diastolic": 90,
+      "heartRate": 106,
+      "oxygenSaturation": 91,
+      "temperature": 37,
+      "meanArterialPressure": 108,
+      "riskLevel": "WARNING",
+      "measuredAt": "2026-10-06T02:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-030",
+      "patientId": "pac-007",
+      "recordedBy": "enf-001",
+      "systolic": 138,
+      "diastolic": 86,
+      "heartRate": 98,
+      "oxygenSaturation": 94,
+      "temperature": 36.9,
+      "meanArterialPressure": 103,
+      "riskLevel": "NORMAL",
+      "measuredAt": "2026-10-06T09:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-031",
+      "patientId": "pac-008",
+      "recordedBy": "enf-002",
+      "systolic": 132,
+      "diastolic": 82,
+      "heartRate": 78,
+      "oxygenSaturation": 97,
+      "temperature": 36.5,
+      "meanArterialPressure": 99,
+      "riskLevel": "NORMAL",
+      "measuredAt": "2026-10-05T04:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-032",
+      "patientId": "pac-008",
+      "recordedBy": "enf-001",
+      "systolic": 134,
+      "diastolic": 84,
+      "heartRate": 82,
+      "oxygenSaturation": 97,
+      "temperature": 36.6,
+      "meanArterialPressure": 101,
+      "riskLevel": "NORMAL",
+      "measuredAt": "2026-10-05T16:00:00.000Z",
+      "correctsRecordId": null
+    },
+    {
+      "id": "vs-033",
+      "patientId": "pac-008",
+      "recordedBy": "enf-001",
+      "systolic": 130,
+      "diastolic": 80,
+      "heartRate": 80,
+      "oxygenSaturation": 98,
+      "temperature": 36.6,
+      "meanArterialPressure": 97,
+      "riskLevel": "NORMAL",
+      "measuredAt": "2026-10-06T04:00:00.000Z",
+      "correctsRecordId": null
+    }
+  ],
+  "alerts": [
+    {
+      "id": "alr-001",
+      "patientId": "pac-001",
+      "severity": "WARNING",
+      "triggerSource": "vital-sign:vs-004",
+      "reason": "Nivel de riesgo evaluado como WARNING",
+      "status": "ACKNOWLEDGED",
+      "raisedAt": "2026-10-05T17:00:00.000Z",
+      "acknowledgedBy": "enf-002"
+    },
+    {
+      "id": "alr-002",
+      "patientId": "pac-001",
+      "severity": "CRITICAL",
+      "triggerSource": "vital-sign:vs-005",
+      "reason": "Valor fuera de umbral: saturacion de oxigeno en 89 %",
+      "status": "OPEN",
+      "raisedAt": "2026-10-06T05:00:00.000Z",
+      "acknowledgedBy": null
+    },
+    {
+      "id": "alr-003",
+      "patientId": "pac-002",
+      "severity": "WARNING",
+      "triggerSource": "vital-sign:vs-006",
+      "reason": "Nivel de riesgo evaluado como WARNING",
+      "status": "RESOLVED",
+      "raisedAt": "2026-10-04T09:00:00.000Z",
+      "acknowledgedBy": "enf-002"
+    },
+    {
+      "id": "alr-004",
+      "patientId": "pac-002",
+      "severity": "WARNING",
+      "triggerSource": "vital-sign:vs-007",
+      "reason": "Nivel de riesgo evaluado como WARNING",
+      "status": "RESOLVED",
+      "raisedAt": "2026-10-04T21:00:00.000Z",
+      "acknowledgedBy": "enf-001"
+    },
+    {
+      "id": "alr-005",
+      "patientId": "pac-002",
+      "severity": "WARNING",
+      "triggerSource": "vital-sign:vs-008",
+      "reason": "Nivel de riesgo evaluado como WARNING",
+      "status": "RESOLVED",
+      "raisedAt": "2026-10-05T09:00:00.000Z",
+      "acknowledgedBy": "enf-002"
+    },
+    {
+      "id": "alr-006",
+      "patientId": "pac-002",
+      "severity": "CRITICAL",
+      "triggerSource": "vital-sign:vs-009",
+      "reason": "Valor fuera de umbral: saturacion de oxigeno en 88 %; hipotension con sistolica en 88 mmHg",
+      "status": "ACKNOWLEDGED",
+      "raisedAt": "2026-10-05T21:00:00.000Z",
+      "acknowledgedBy": "enf-001"
+    },
+    {
+      "id": "alr-007",
+      "patientId": "pac-002",
+      "severity": "WARNING",
+      "triggerSource": "vital-sign:vs-010",
+      "reason": "Nivel de riesgo evaluado como WARNING",
+      "status": "OPEN",
+      "raisedAt": "2026-10-06T07:00:00.000Z",
+      "acknowledgedBy": null
+    },
+    {
+      "id": "alr-008",
+      "patientId": "pac-004",
+      "severity": "WARNING",
+      "triggerSource": "vital-sign:vs-018",
+      "reason": "Nivel de riesgo evaluado como WARNING",
+      "status": "OPEN",
+      "raisedAt": "2026-10-06T03:00:00.000Z",
+      "acknowledgedBy": null
+    },
+    {
+      "id": "alr-009",
+      "patientId": "pac-005",
+      "severity": "WARNING",
+      "triggerSource": "vital-sign:vs-019",
+      "reason": "Nivel de riesgo evaluado como WARNING",
+      "status": "RESOLVED",
+      "raisedAt": "2026-10-04T19:00:00.000Z",
+      "acknowledgedBy": "enf-002"
+    },
+    {
+      "id": "alr-010",
+      "patientId": "pac-005",
+      "severity": "CRITICAL",
+      "triggerSource": "vital-sign:vs-020",
+      "reason": "Valor fuera de umbral: frecuencia cardiaca en 136 lpm",
+      "status": "RESOLVED",
+      "raisedAt": "2026-10-05T07:00:00.000Z",
+      "acknowledgedBy": "enf-001"
+    },
+    {
+      "id": "alr-011",
+      "patientId": "pac-005",
+      "severity": "CRITICAL",
+      "triggerSource": "vital-sign:vs-021",
+      "reason": "Valor fuera de umbral: frecuencia cardiaca en 142 lpm",
+      "status": "ACKNOWLEDGED",
+      "raisedAt": "2026-10-05T19:00:00.000Z",
+      "acknowledgedBy": "enf-002"
+    },
+    {
+      "id": "alr-012",
+      "patientId": "pac-005",
+      "severity": "WARNING",
+      "triggerSource": "vital-sign:vs-022",
+      "reason": "Nivel de riesgo evaluado como WARNING",
+      "status": "OPEN",
+      "raisedAt": "2026-10-06T06:00:00.000Z",
+      "acknowledgedBy": null
+    },
+    {
+      "id": "alr-013",
+      "patientId": "pac-006",
+      "severity": "WARNING",
+      "triggerSource": "vital-sign:vs-025",
+      "reason": "Nivel de riesgo evaluado como WARNING",
+      "status": "ACKNOWLEDGED",
+      "raisedAt": "2026-10-05T23:00:00.000Z",
+      "acknowledgedBy": "enf-002"
+    },
+    {
+      "id": "alr-014",
+      "patientId": "pac-006",
+      "severity": "WARNING",
+      "triggerSource": "vital-sign:vs-026",
+      "reason": "Nivel de riesgo evaluado como WARNING",
+      "status": "OPEN",
+      "raisedAt": "2026-10-06T08:00:00.000Z",
+      "acknowledgedBy": null
+    },
+    {
+      "id": "alr-015",
+      "patientId": "pac-007",
+      "severity": "WARNING",
+      "triggerSource": "vital-sign:vs-027",
+      "reason": "Nivel de riesgo evaluado como WARNING",
+      "status": "RESOLVED",
+      "raisedAt": "2026-10-05T02:00:00.000Z",
+      "acknowledgedBy": "enf-002"
+    },
+    {
+      "id": "alr-016",
+      "patientId": "pac-007",
+      "severity": "CRITICAL",
+      "triggerSource": "vital-sign:vs-028",
+      "reason": "Valor fuera de umbral: saturacion de oxigeno en 87 %",
+      "status": "ACKNOWLEDGED",
+      "raisedAt": "2026-10-05T14:00:00.000Z",
+      "acknowledgedBy": "enf-001"
+    },
+    {
+      "id": "alr-017",
+      "patientId": "pac-007",
+      "severity": "WARNING",
+      "triggerSource": "vital-sign:vs-029",
+      "reason": "Nivel de riesgo evaluado como WARNING",
+      "status": "OPEN",
+      "raisedAt": "2026-10-06T02:00:00.000Z",
+      "acknowledgedBy": null
+    }
+  ],
+  "medicalOrders": [
+    {
+      "id": "ord-001",
+      "patientId": "pac-001",
+      "prescribedBy": "med-001",
+      "medication": "Acido acetilsalicilico",
+      "dose": "100 mg",
+      "route": "Via oral",
+      "frequency": "Cada 24 horas",
+      "status": "ACTIVE",
+      "prescribedAt": "2026-10-04T07:00:00.000Z",
+      "replacesOrderId": null,
+      "supersededBy": null
+    },
+    {
+      "id": "ord-002",
+      "patientId": "pac-001",
+      "prescribedBy": "med-001",
+      "medication": "Enoxaparina",
+      "dose": "40 mg",
+      "route": "Via subcutanea",
+      "frequency": "Cada 12 horas",
+      "status": "SUPERSEDED",
+      "prescribedAt": "2026-10-04T09:00:00.000Z",
+      "replacesOrderId": null,
+      "supersededBy": "ord-003"
+    },
+    {
+      "id": "ord-003",
+      "patientId": "pac-001",
+      "prescribedBy": "med-002",
+      "medication": "Enoxaparina",
+      "dose": "60 mg",
+      "route": "Via subcutanea",
+      "frequency": "Cada 12 horas",
+      "status": "ACTIVE",
+      "prescribedAt": "2026-10-05T15:00:00.000Z",
+      "replacesOrderId": "ord-002",
+      "supersededBy": null
+    },
+    {
+      "id": "ord-004",
+      "patientId": "pac-002",
+      "prescribedBy": "med-001",
+      "medication": "Furosemida",
+      "dose": "20 mg",
+      "route": "Via endovenosa",
+      "frequency": "Cada 8 horas",
+      "status": "ACTIVE",
+      "prescribedAt": "2026-10-04T15:00:00.000Z",
+      "replacesOrderId": null,
+      "supersededBy": null
+    },
+    {
+      "id": "ord-005",
+      "patientId": "pac-004",
+      "prescribedBy": "med-002",
+      "medication": "Atorvastatina",
+      "dose": "80 mg",
+      "route": "Via oral",
+      "frequency": "Cada 24 horas",
+      "status": "ACTIVE",
+      "prescribedAt": "2026-10-04T19:00:00.000Z",
+      "replacesOrderId": null,
+      "supersededBy": null
+    },
+    {
+      "id": "ord-006",
+      "patientId": "pac-005",
+      "prescribedBy": "med-001",
+      "medication": "Amiodarona",
+      "dose": "150 mg",
+      "route": "Via endovenosa",
+      "frequency": "Dosis unica",
+      "status": "ACTIVE",
+      "prescribedAt": "2026-10-05T09:00:00.000Z",
+      "replacesOrderId": null,
+      "supersededBy": null
+    },
+    {
+      "id": "ord-007",
+      "patientId": "pac-007",
+      "prescribedBy": "med-002",
+      "medication": "Nitroglicerina",
+      "dose": "10 mcg/min",
+      "route": "Via endovenosa",
+      "frequency": "Infusion continua",
+      "status": "ACTIVE",
+      "prescribedAt": "2026-10-05T13:00:00.000Z",
+      "replacesOrderId": null,
+      "supersededBy": null
+    }
+  ],
+  "handovers": [
+    {
+      "id": "hvr-001",
+      "patientId": "pac-001",
+      "outgoingNurseId": "enf-002",
+      "incomingNurseId": "enf-001",
+      "situation": "Paciente de 68 anos en el segundo dia post infarto, con dolor toracico controlado.",
+      "background": "Ingreso por infarto con elevacion del ST. Angioplastia primaria hace 48 horas.",
+      "assessment": "Tendencia al alza de la presion arterial y descenso progresivo de la saturacion en las ultimas doce horas.",
+      "recommendation": "Controlar signos vitales cada dos horas y avisar al medico si la saturacion baja de 90 %.",
+      "status": "ACKNOWLEDGED",
+      "issuedAt": "2026-10-05T13:00:00.000Z",
+      "acknowledgedAt": "2026-10-05T14:00:00.000Z"
+    },
+    {
+      "id": "hvr-002",
+      "patientId": "pac-002",
+      "outgoingNurseId": "enf-002",
+      "incomingNurseId": "enf-001",
+      "situation": "Paciente de 74 anos con insuficiencia cardiaca descompensada y balance hidrico positivo.",
+      "background": "Tercer ingreso en el ano por el mismo motivo. En tratamiento con diuretico endovenoso.",
+      "assessment": "Presion arterial en descenso sostenido; responde parcialmente al diuretico.",
+      "recommendation": "Vigilar diuresis horaria y reportar si la sistolica cae por debajo de 90 mmHg.",
+      "status": "ACKNOWLEDGED",
+      "issuedAt": "2026-10-05T13:00:00.000Z",
+      "acknowledgedAt": "2026-10-05T15:00:00.000Z"
+    },
+    {
+      "id": "hvr-003",
+      "patientId": "pac-007",
+      "outgoingNurseId": "enf-002",
+      "incomingNurseId": "enf-001",
+      "situation": "Paciente de 79 anos con edema agudo de pulmon en resolucion.",
+      "background": "Ingreso de urgencia hace 36 horas con dificultad respiratoria severa.",
+      "assessment": "Saturacion en recuperacion tras el ajuste de la infusion; aun requiere oxigeno suplementario.",
+      "recommendation": "Mantener posicion semisentada y no retirar el oxigeno sin indicacion medica.",
+      "status": "ISSUED",
+      "issuedAt": "2026-10-06T01:00:00.000Z",
+      "acknowledgedAt": null
+    },
+    {
+      "id": "hvr-004",
+      "patientId": "pac-005",
+      "outgoingNurseId": "enf-001",
+      "incomingNurseId": "enf-002",
+      "situation": "Paciente de 70 anos con fibrilacion auricular de alta respuesta, ya revertida.",
+      "background": "Episodio iniciado hace dos dias. Recibio amiodarona endovenosa en dosis unica.",
+      "assessment": "Frecuencia cardiaca descendio de 142 a 112 lpm tras la dosis.",
+      "recommendation": "Monitorizar frecuencia cada hora durante las proximas seis horas.",
+      "status": "ISSUED",
+      "issuedAt": "2026-10-06T07:00:00.000Z",
+      "acknowledgedAt": null
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "aud-001",
+      "actionType": "PacienteAdmitido",
+      "occurredAt": "2026-10-02T11:00:00.000Z",
+      "affectedResource": "pac-001",
+      "actorId": "sistema",
+      "metadata": {
+        "bedLocation": "UCI Cardiovascular - Cama 1"
+      }
+    },
+    {
+      "id": "aud-002",
+      "actionType": "PacienteAdmitido",
+      "occurredAt": "2026-10-02T17:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "sistema",
+      "metadata": {
+        "bedLocation": "UCI Cardiovascular - Cama 2"
+      }
+    },
+    {
+      "id": "aud-003",
+      "actionType": "PacienteAdmitido",
+      "occurredAt": "2026-10-02T23:00:00.000Z",
+      "affectedResource": "pac-003",
+      "actorId": "sistema",
+      "metadata": {
+        "bedLocation": "UCI Cardiovascular - Cama 3"
+      }
+    },
+    {
+      "id": "aud-004",
+      "actionType": "PacienteAdmitido",
+      "occurredAt": "2026-10-03T05:00:00.000Z",
+      "affectedResource": "pac-004",
+      "actorId": "sistema",
+      "metadata": {
+        "bedLocation": "UCI Cardiovascular - Cama 4"
+      }
+    },
+    {
+      "id": "aud-005",
+      "actionType": "PacienteAdmitido",
+      "occurredAt": "2026-10-03T11:00:00.000Z",
+      "affectedResource": "pac-005",
+      "actorId": "sistema",
+      "metadata": {
+        "bedLocation": "UCI Cardiovascular - Cama 5"
+      }
+    },
+    {
+      "id": "aud-006",
+      "actionType": "PacienteAdmitido",
+      "occurredAt": "2026-10-03T17:00:00.000Z",
+      "affectedResource": "pac-006",
+      "actorId": "sistema",
+      "metadata": {
+        "bedLocation": "UCI Cardiovascular - Cama 6"
+      }
+    },
+    {
+      "id": "aud-007",
+      "actionType": "PacienteAdmitido",
+      "occurredAt": "2026-10-03T23:00:00.000Z",
+      "affectedResource": "pac-007",
+      "actorId": "sistema",
+      "metadata": {
+        "bedLocation": "UCI Cardiovascular - Cama 7"
+      }
+    },
+    {
+      "id": "aud-008",
+      "actionType": "PacienteAdmitido",
+      "occurredAt": "2026-10-04T05:00:00.000Z",
+      "affectedResource": "pac-008",
+      "actorId": "sistema",
+      "metadata": {
+        "bedLocation": "UCI Cardiovascular - Cama 8"
+      }
+    },
+    {
+      "id": "aud-009",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-04T05:00:00.000Z",
+      "affectedResource": "pac-001",
+      "actorId": "enf-002",
+      "metadata": {
+        "recordId": "vs-001"
+      }
+    },
+    {
+      "id": "aud-010",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-04T05:00:00.000Z",
+      "affectedResource": "pac-001",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-001",
+        "riskLevel": "NORMAL"
+      }
+    },
+    {
+      "id": "aud-109",
+      "actionType": "NuevaIndicacionMedicaRegistrada",
+      "occurredAt": "2026-10-04T07:00:00.000Z",
+      "affectedResource": "pac-001",
+      "actorId": "med-001",
+      "metadata": {
+        "orderId": "ord-001",
+        "replacesOrderId": null
+      }
+    },
+    {
+      "id": "aud-019",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-04T09:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "enf-002",
+      "metadata": {
+        "recordId": "vs-006"
+      }
+    },
+    {
+      "id": "aud-020",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-04T09:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-006",
+        "riskLevel": "WARNING"
+      }
+    },
+    {
+      "id": "aud-078",
+      "actionType": "AlertaCriticaGenerada",
+      "occurredAt": "2026-10-04T09:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "sistema",
+      "metadata": {
+        "alertId": "alr-003",
+        "severity": "WARNING",
+        "triggerSource": "vital-sign:vs-006"
+      }
+    },
+    {
+      "id": "aud-079",
+      "actionType": "AlertaAtendida",
+      "occurredAt": "2026-10-04T09:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "enf-002",
+      "metadata": {
+        "alertId": "alr-003"
+      }
+    },
+    {
+      "id": "aud-080",
+      "actionType": "AlertaResuelta",
+      "occurredAt": "2026-10-04T09:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "enf-002",
+      "metadata": {
+        "alertId": "alr-003"
+      }
+    },
+    {
+      "id": "aud-110",
+      "actionType": "NuevaIndicacionMedicaRegistrada",
+      "occurredAt": "2026-10-04T09:00:00.000Z",
+      "affectedResource": "pac-001",
+      "actorId": "med-001",
+      "metadata": {
+        "orderId": "ord-002",
+        "replacesOrderId": null
+      }
+    },
+    {
+      "id": "aud-111",
+      "actionType": "IndicacionMedicaReemplazada",
+      "occurredAt": "2026-10-04T09:00:00.000Z",
+      "affectedResource": "pac-001",
+      "actorId": "med-001",
+      "metadata": {
+        "orderId": "ord-002",
+        "supersededBy": "ord-003"
+      }
+    },
+    {
+      "id": "aud-029",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-04T13:00:00.000Z",
+      "affectedResource": "pac-003",
+      "actorId": "enf-002",
+      "metadata": {
+        "recordId": "vs-011"
+      }
+    },
+    {
+      "id": "aud-030",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-04T13:00:00.000Z",
+      "affectedResource": "pac-003",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-011",
+        "riskLevel": "NORMAL"
+      }
+    },
+    {
+      "id": "aud-037",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-04T15:00:00.000Z",
+      "affectedResource": "pac-004",
+      "actorId": "enf-002",
+      "metadata": {
+        "recordId": "vs-015"
+      }
+    },
+    {
+      "id": "aud-038",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-04T15:00:00.000Z",
+      "affectedResource": "pac-004",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-015",
+        "riskLevel": "NORMAL"
+      }
+    },
+    {
+      "id": "aud-113",
+      "actionType": "NuevaIndicacionMedicaRegistrada",
+      "occurredAt": "2026-10-04T15:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "med-001",
+      "metadata": {
+        "orderId": "ord-004",
+        "replacesOrderId": null
+      }
+    },
+    {
+      "id": "aud-011",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-04T17:00:00.000Z",
+      "affectedResource": "pac-001",
+      "actorId": "enf-002",
+      "metadata": {
+        "recordId": "vs-002"
+      }
+    },
+    {
+      "id": "aud-012",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-04T17:00:00.000Z",
+      "affectedResource": "pac-001",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-002",
+        "riskLevel": "NORMAL"
+      }
+    },
+    {
+      "id": "aud-045",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-04T19:00:00.000Z",
+      "affectedResource": "pac-005",
+      "actorId": "enf-002",
+      "metadata": {
+        "recordId": "vs-019"
+      }
+    },
+    {
+      "id": "aud-046",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-04T19:00:00.000Z",
+      "affectedResource": "pac-005",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-019",
+        "riskLevel": "WARNING"
+      }
+    },
+    {
+      "id": "aud-091",
+      "actionType": "AlertaCriticaGenerada",
+      "occurredAt": "2026-10-04T19:00:00.000Z",
+      "affectedResource": "pac-005",
+      "actorId": "sistema",
+      "metadata": {
+        "alertId": "alr-009",
+        "severity": "WARNING",
+        "triggerSource": "vital-sign:vs-019"
+      }
+    },
+    {
+      "id": "aud-092",
+      "actionType": "AlertaAtendida",
+      "occurredAt": "2026-10-04T19:00:00.000Z",
+      "affectedResource": "pac-005",
+      "actorId": "enf-002",
+      "metadata": {
+        "alertId": "alr-009"
+      }
+    },
+    {
+      "id": "aud-093",
+      "actionType": "AlertaResuelta",
+      "occurredAt": "2026-10-04T19:00:00.000Z",
+      "affectedResource": "pac-005",
+      "actorId": "enf-002",
+      "metadata": {
+        "alertId": "alr-009"
+      }
+    },
+    {
+      "id": "aud-114",
+      "actionType": "NuevaIndicacionMedicaRegistrada",
+      "occurredAt": "2026-10-04T19:00:00.000Z",
+      "affectedResource": "pac-004",
+      "actorId": "med-002",
+      "metadata": {
+        "orderId": "ord-005",
+        "replacesOrderId": null
+      }
+    },
+    {
+      "id": "aud-021",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-04T21:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "enf-002",
+      "metadata": {
+        "recordId": "vs-007"
+      }
+    },
+    {
+      "id": "aud-022",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-04T21:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-007",
+        "riskLevel": "WARNING"
+      }
+    },
+    {
+      "id": "aud-081",
+      "actionType": "AlertaCriticaGenerada",
+      "occurredAt": "2026-10-04T21:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "sistema",
+      "metadata": {
+        "alertId": "alr-004",
+        "severity": "WARNING",
+        "triggerSource": "vital-sign:vs-007"
+      }
+    },
+    {
+      "id": "aud-082",
+      "actionType": "AlertaAtendida",
+      "occurredAt": "2026-10-04T21:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "enf-001",
+      "metadata": {
+        "alertId": "alr-004"
+      }
+    },
+    {
+      "id": "aud-083",
+      "actionType": "AlertaResuelta",
+      "occurredAt": "2026-10-04T21:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "enf-001",
+      "metadata": {
+        "alertId": "alr-004"
+      }
+    },
+    {
+      "id": "aud-053",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-04T23:00:00.000Z",
+      "affectedResource": "pac-006",
+      "actorId": "enf-002",
+      "metadata": {
+        "recordId": "vs-023"
+      }
+    },
+    {
+      "id": "aud-054",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-04T23:00:00.000Z",
+      "affectedResource": "pac-006",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-023",
+        "riskLevel": "NORMAL"
+      }
+    },
+    {
+      "id": "aud-031",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-05T01:00:00.000Z",
+      "affectedResource": "pac-003",
+      "actorId": "enf-002",
+      "metadata": {
+        "recordId": "vs-012"
+      }
+    },
+    {
+      "id": "aud-032",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-05T01:00:00.000Z",
+      "affectedResource": "pac-003",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-012",
+        "riskLevel": "NORMAL"
+      }
+    },
+    {
+      "id": "aud-061",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-05T02:00:00.000Z",
+      "affectedResource": "pac-007",
+      "actorId": "enf-002",
+      "metadata": {
+        "recordId": "vs-027"
+      }
+    },
+    {
+      "id": "aud-062",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-05T02:00:00.000Z",
+      "affectedResource": "pac-007",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-027",
+        "riskLevel": "WARNING"
+      }
+    },
+    {
+      "id": "aud-103",
+      "actionType": "AlertaCriticaGenerada",
+      "occurredAt": "2026-10-05T02:00:00.000Z",
+      "affectedResource": "pac-007",
+      "actorId": "sistema",
+      "metadata": {
+        "alertId": "alr-015",
+        "severity": "WARNING",
+        "triggerSource": "vital-sign:vs-027"
+      }
+    },
+    {
+      "id": "aud-104",
+      "actionType": "AlertaAtendida",
+      "occurredAt": "2026-10-05T02:00:00.000Z",
+      "affectedResource": "pac-007",
+      "actorId": "enf-002",
+      "metadata": {
+        "alertId": "alr-015"
+      }
+    },
+    {
+      "id": "aud-105",
+      "actionType": "AlertaResuelta",
+      "occurredAt": "2026-10-05T02:00:00.000Z",
+      "affectedResource": "pac-007",
+      "actorId": "enf-002",
+      "metadata": {
+        "alertId": "alr-015"
+      }
+    },
+    {
+      "id": "aud-039",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-05T03:00:00.000Z",
+      "affectedResource": "pac-004",
+      "actorId": "enf-002",
+      "metadata": {
+        "recordId": "vs-016"
+      }
+    },
+    {
+      "id": "aud-040",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-05T03:00:00.000Z",
+      "affectedResource": "pac-004",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-016",
+        "riskLevel": "NORMAL"
+      }
+    },
+    {
+      "id": "aud-069",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-05T04:00:00.000Z",
+      "affectedResource": "pac-008",
+      "actorId": "enf-002",
+      "metadata": {
+        "recordId": "vs-031"
+      }
+    },
+    {
+      "id": "aud-070",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-05T04:00:00.000Z",
+      "affectedResource": "pac-008",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-031",
+        "riskLevel": "NORMAL"
+      }
+    },
+    {
+      "id": "aud-013",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-05T05:00:00.000Z",
+      "affectedResource": "pac-001",
+      "actorId": "enf-001",
+      "metadata": {
+        "recordId": "vs-003"
+      }
+    },
+    {
+      "id": "aud-014",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-05T05:00:00.000Z",
+      "affectedResource": "pac-001",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-003",
+        "riskLevel": "NORMAL"
+      }
+    },
+    {
+      "id": "aud-047",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-05T07:00:00.000Z",
+      "affectedResource": "pac-005",
+      "actorId": "enf-001",
+      "metadata": {
+        "recordId": "vs-020"
+      }
+    },
+    {
+      "id": "aud-048",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-05T07:00:00.000Z",
+      "affectedResource": "pac-005",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-020",
+        "riskLevel": "CRITICAL"
+      }
+    },
+    {
+      "id": "aud-094",
+      "actionType": "AlertaCriticaGenerada",
+      "occurredAt": "2026-10-05T07:00:00.000Z",
+      "affectedResource": "pac-005",
+      "actorId": "sistema",
+      "metadata": {
+        "alertId": "alr-010",
+        "severity": "CRITICAL",
+        "triggerSource": "vital-sign:vs-020"
+      }
+    },
+    {
+      "id": "aud-095",
+      "actionType": "AlertaAtendida",
+      "occurredAt": "2026-10-05T07:00:00.000Z",
+      "affectedResource": "pac-005",
+      "actorId": "enf-001",
+      "metadata": {
+        "alertId": "alr-010"
+      }
+    },
+    {
+      "id": "aud-096",
+      "actionType": "AlertaResuelta",
+      "occurredAt": "2026-10-05T07:00:00.000Z",
+      "affectedResource": "pac-005",
+      "actorId": "enf-001",
+      "metadata": {
+        "alertId": "alr-010"
+      }
+    },
+    {
+      "id": "aud-023",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-05T09:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "enf-001",
+      "metadata": {
+        "recordId": "vs-008"
+      }
+    },
+    {
+      "id": "aud-024",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-05T09:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-008",
+        "riskLevel": "WARNING"
+      }
+    },
+    {
+      "id": "aud-084",
+      "actionType": "AlertaCriticaGenerada",
+      "occurredAt": "2026-10-05T09:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "sistema",
+      "metadata": {
+        "alertId": "alr-005",
+        "severity": "WARNING",
+        "triggerSource": "vital-sign:vs-008"
+      }
+    },
+    {
+      "id": "aud-085",
+      "actionType": "AlertaAtendida",
+      "occurredAt": "2026-10-05T09:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "enf-002",
+      "metadata": {
+        "alertId": "alr-005"
+      }
+    },
+    {
+      "id": "aud-086",
+      "actionType": "AlertaResuelta",
+      "occurredAt": "2026-10-05T09:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "enf-002",
+      "metadata": {
+        "alertId": "alr-005"
+      }
+    },
+    {
+      "id": "aud-115",
+      "actionType": "NuevaIndicacionMedicaRegistrada",
+      "occurredAt": "2026-10-05T09:00:00.000Z",
+      "affectedResource": "pac-005",
+      "actorId": "med-001",
+      "metadata": {
+        "orderId": "ord-006",
+        "replacesOrderId": null
+      }
+    },
+    {
+      "id": "aud-055",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-05T11:00:00.000Z",
+      "affectedResource": "pac-006",
+      "actorId": "enf-001",
+      "metadata": {
+        "recordId": "vs-024"
+      }
+    },
+    {
+      "id": "aud-056",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-05T11:00:00.000Z",
+      "affectedResource": "pac-006",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-024",
+        "riskLevel": "NORMAL"
+      }
+    },
+    {
+      "id": "aud-033",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-05T13:00:00.000Z",
+      "affectedResource": "pac-003",
+      "actorId": "enf-001",
+      "metadata": {
+        "recordId": "vs-013"
+      }
+    },
+    {
+      "id": "aud-034",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-05T13:00:00.000Z",
+      "affectedResource": "pac-003",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-013",
+        "riskLevel": "NORMAL"
+      }
+    },
+    {
+      "id": "aud-116",
+      "actionType": "NuevaIndicacionMedicaRegistrada",
+      "occurredAt": "2026-10-05T13:00:00.000Z",
+      "affectedResource": "pac-007",
+      "actorId": "med-002",
+      "metadata": {
+        "orderId": "ord-007",
+        "replacesOrderId": null
+      }
+    },
+    {
+      "id": "aud-117",
+      "actionType": "EntregaSbarRegistrada",
+      "occurredAt": "2026-10-05T13:00:00.000Z",
+      "affectedResource": "pac-001",
+      "actorId": "enf-002",
+      "metadata": {
+        "handoverId": "hvr-001",
+        "incomingNurseId": "enf-001"
+      }
+    },
+    {
+      "id": "aud-119",
+      "actionType": "EntregaSbarRegistrada",
+      "occurredAt": "2026-10-05T13:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "enf-002",
+      "metadata": {
+        "handoverId": "hvr-002",
+        "incomingNurseId": "enf-001"
+      }
+    },
+    {
+      "id": "aud-063",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-05T14:00:00.000Z",
+      "affectedResource": "pac-007",
+      "actorId": "enf-001",
+      "metadata": {
+        "recordId": "vs-028"
+      }
+    },
+    {
+      "id": "aud-064",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-05T14:00:00.000Z",
+      "affectedResource": "pac-007",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-028",
+        "riskLevel": "CRITICAL"
+      }
+    },
+    {
+      "id": "aud-106",
+      "actionType": "AlertaCriticaGenerada",
+      "occurredAt": "2026-10-05T14:00:00.000Z",
+      "affectedResource": "pac-007",
+      "actorId": "sistema",
+      "metadata": {
+        "alertId": "alr-016",
+        "severity": "CRITICAL",
+        "triggerSource": "vital-sign:vs-028"
+      }
+    },
+    {
+      "id": "aud-107",
+      "actionType": "AlertaAtendida",
+      "occurredAt": "2026-10-05T14:00:00.000Z",
+      "affectedResource": "pac-007",
+      "actorId": "enf-001",
+      "metadata": {
+        "alertId": "alr-016"
+      }
+    },
+    {
+      "id": "aud-118",
+      "actionType": "AcuseDeReciboConfirmado",
+      "occurredAt": "2026-10-05T14:00:00.000Z",
+      "affectedResource": "pac-001",
+      "actorId": "enf-001",
+      "metadata": {
+        "handoverId": "hvr-001"
+      }
+    },
+    {
+      "id": "aud-041",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-05T15:00:00.000Z",
+      "affectedResource": "pac-004",
+      "actorId": "enf-001",
+      "metadata": {
+        "recordId": "vs-017"
+      }
+    },
+    {
+      "id": "aud-042",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-05T15:00:00.000Z",
+      "affectedResource": "pac-004",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-017",
+        "riskLevel": "NORMAL"
+      }
+    },
+    {
+      "id": "aud-112",
+      "actionType": "NuevaIndicacionMedicaRegistrada",
+      "occurredAt": "2026-10-05T15:00:00.000Z",
+      "affectedResource": "pac-001",
+      "actorId": "med-002",
+      "metadata": {
+        "orderId": "ord-003",
+        "replacesOrderId": "ord-002"
+      }
+    },
+    {
+      "id": "aud-120",
+      "actionType": "AcuseDeReciboConfirmado",
+      "occurredAt": "2026-10-05T15:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "enf-001",
+      "metadata": {
+        "handoverId": "hvr-002"
+      }
+    },
+    {
+      "id": "aud-071",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-05T16:00:00.000Z",
+      "affectedResource": "pac-008",
+      "actorId": "enf-001",
+      "metadata": {
+        "recordId": "vs-032"
+      }
+    },
+    {
+      "id": "aud-072",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-05T16:00:00.000Z",
+      "affectedResource": "pac-008",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-032",
+        "riskLevel": "NORMAL"
+      }
+    },
+    {
+      "id": "aud-015",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-05T17:00:00.000Z",
+      "affectedResource": "pac-001",
+      "actorId": "enf-001",
+      "metadata": {
+        "recordId": "vs-004"
+      }
+    },
+    {
+      "id": "aud-016",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-05T17:00:00.000Z",
+      "affectedResource": "pac-001",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-004",
+        "riskLevel": "WARNING"
+      }
+    },
+    {
+      "id": "aud-075",
+      "actionType": "AlertaCriticaGenerada",
+      "occurredAt": "2026-10-05T17:00:00.000Z",
+      "affectedResource": "pac-001",
+      "actorId": "sistema",
+      "metadata": {
+        "alertId": "alr-001",
+        "severity": "WARNING",
+        "triggerSource": "vital-sign:vs-004"
+      }
+    },
+    {
+      "id": "aud-076",
+      "actionType": "AlertaAtendida",
+      "occurredAt": "2026-10-05T17:00:00.000Z",
+      "affectedResource": "pac-001",
+      "actorId": "enf-002",
+      "metadata": {
+        "alertId": "alr-001"
+      }
+    },
+    {
+      "id": "aud-049",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-05T19:00:00.000Z",
+      "affectedResource": "pac-005",
+      "actorId": "enf-001",
+      "metadata": {
+        "recordId": "vs-021"
+      }
+    },
+    {
+      "id": "aud-050",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-05T19:00:00.000Z",
+      "affectedResource": "pac-005",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-021",
+        "riskLevel": "CRITICAL"
+      }
+    },
+    {
+      "id": "aud-097",
+      "actionType": "AlertaCriticaGenerada",
+      "occurredAt": "2026-10-05T19:00:00.000Z",
+      "affectedResource": "pac-005",
+      "actorId": "sistema",
+      "metadata": {
+        "alertId": "alr-011",
+        "severity": "CRITICAL",
+        "triggerSource": "vital-sign:vs-021"
+      }
+    },
+    {
+      "id": "aud-098",
+      "actionType": "AlertaAtendida",
+      "occurredAt": "2026-10-05T19:00:00.000Z",
+      "affectedResource": "pac-005",
+      "actorId": "enf-002",
+      "metadata": {
+        "alertId": "alr-011"
+      }
+    },
+    {
+      "id": "aud-025",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-05T21:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "enf-001",
+      "metadata": {
+        "recordId": "vs-009"
+      }
+    },
+    {
+      "id": "aud-026",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-05T21:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-009",
+        "riskLevel": "CRITICAL"
+      }
+    },
+    {
+      "id": "aud-087",
+      "actionType": "AlertaCriticaGenerada",
+      "occurredAt": "2026-10-05T21:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "sistema",
+      "metadata": {
+        "alertId": "alr-006",
+        "severity": "CRITICAL",
+        "triggerSource": "vital-sign:vs-009"
+      }
+    },
+    {
+      "id": "aud-088",
+      "actionType": "AlertaAtendida",
+      "occurredAt": "2026-10-05T21:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "enf-001",
+      "metadata": {
+        "alertId": "alr-006"
+      }
+    },
+    {
+      "id": "aud-057",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-05T23:00:00.000Z",
+      "affectedResource": "pac-006",
+      "actorId": "enf-001",
+      "metadata": {
+        "recordId": "vs-025"
+      }
+    },
+    {
+      "id": "aud-058",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-05T23:00:00.000Z",
+      "affectedResource": "pac-006",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-025",
+        "riskLevel": "WARNING"
+      }
+    },
+    {
+      "id": "aud-100",
+      "actionType": "AlertaCriticaGenerada",
+      "occurredAt": "2026-10-05T23:00:00.000Z",
+      "affectedResource": "pac-006",
+      "actorId": "sistema",
+      "metadata": {
+        "alertId": "alr-013",
+        "severity": "WARNING",
+        "triggerSource": "vital-sign:vs-025"
+      }
+    },
+    {
+      "id": "aud-101",
+      "actionType": "AlertaAtendida",
+      "occurredAt": "2026-10-05T23:00:00.000Z",
+      "affectedResource": "pac-006",
+      "actorId": "enf-002",
+      "metadata": {
+        "alertId": "alr-013"
+      }
+    },
+    {
+      "id": "aud-035",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-06T01:00:00.000Z",
+      "affectedResource": "pac-003",
+      "actorId": "enf-001",
+      "metadata": {
+        "recordId": "vs-014"
+      }
+    },
+    {
+      "id": "aud-036",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-06T01:00:00.000Z",
+      "affectedResource": "pac-003",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-014",
+        "riskLevel": "NORMAL"
+      }
+    },
+    {
+      "id": "aud-121",
+      "actionType": "EntregaSbarRegistrada",
+      "occurredAt": "2026-10-06T01:00:00.000Z",
+      "affectedResource": "pac-007",
+      "actorId": "enf-002",
+      "metadata": {
+        "handoverId": "hvr-003",
+        "incomingNurseId": "enf-001"
+      }
+    },
+    {
+      "id": "aud-065",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-06T02:00:00.000Z",
+      "affectedResource": "pac-007",
+      "actorId": "enf-001",
+      "metadata": {
+        "recordId": "vs-029"
+      }
+    },
+    {
+      "id": "aud-066",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-06T02:00:00.000Z",
+      "affectedResource": "pac-007",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-029",
+        "riskLevel": "WARNING"
+      }
+    },
+    {
+      "id": "aud-108",
+      "actionType": "AlertaCriticaGenerada",
+      "occurredAt": "2026-10-06T02:00:00.000Z",
+      "affectedResource": "pac-007",
+      "actorId": "sistema",
+      "metadata": {
+        "alertId": "alr-017",
+        "severity": "WARNING",
+        "triggerSource": "vital-sign:vs-029"
+      }
+    },
+    {
+      "id": "aud-043",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-06T03:00:00.000Z",
+      "affectedResource": "pac-004",
+      "actorId": "enf-001",
+      "metadata": {
+        "recordId": "vs-018"
+      }
+    },
+    {
+      "id": "aud-044",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-06T03:00:00.000Z",
+      "affectedResource": "pac-004",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-018",
+        "riskLevel": "WARNING"
+      }
+    },
+    {
+      "id": "aud-090",
+      "actionType": "AlertaCriticaGenerada",
+      "occurredAt": "2026-10-06T03:00:00.000Z",
+      "affectedResource": "pac-004",
+      "actorId": "sistema",
+      "metadata": {
+        "alertId": "alr-008",
+        "severity": "WARNING",
+        "triggerSource": "vital-sign:vs-018"
+      }
+    },
+    {
+      "id": "aud-073",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-06T04:00:00.000Z",
+      "affectedResource": "pac-008",
+      "actorId": "enf-001",
+      "metadata": {
+        "recordId": "vs-033"
+      }
+    },
+    {
+      "id": "aud-074",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-06T04:00:00.000Z",
+      "affectedResource": "pac-008",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-033",
+        "riskLevel": "NORMAL"
+      }
+    },
+    {
+      "id": "aud-017",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-06T05:00:00.000Z",
+      "affectedResource": "pac-001",
+      "actorId": "enf-001",
+      "metadata": {
+        "recordId": "vs-005"
+      }
+    },
+    {
+      "id": "aud-018",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-06T05:00:00.000Z",
+      "affectedResource": "pac-001",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-005",
+        "riskLevel": "CRITICAL"
+      }
+    },
+    {
+      "id": "aud-077",
+      "actionType": "AlertaCriticaGenerada",
+      "occurredAt": "2026-10-06T05:00:00.000Z",
+      "affectedResource": "pac-001",
+      "actorId": "sistema",
+      "metadata": {
+        "alertId": "alr-002",
+        "severity": "CRITICAL",
+        "triggerSource": "vital-sign:vs-005"
+      }
+    },
+    {
+      "id": "aud-051",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-06T06:00:00.000Z",
+      "affectedResource": "pac-005",
+      "actorId": "enf-001",
+      "metadata": {
+        "recordId": "vs-022"
+      }
+    },
+    {
+      "id": "aud-052",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-06T06:00:00.000Z",
+      "affectedResource": "pac-005",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-022",
+        "riskLevel": "WARNING"
+      }
+    },
+    {
+      "id": "aud-099",
+      "actionType": "AlertaCriticaGenerada",
+      "occurredAt": "2026-10-06T06:00:00.000Z",
+      "affectedResource": "pac-005",
+      "actorId": "sistema",
+      "metadata": {
+        "alertId": "alr-012",
+        "severity": "WARNING",
+        "triggerSource": "vital-sign:vs-022"
+      }
+    },
+    {
+      "id": "aud-027",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-06T07:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "enf-001",
+      "metadata": {
+        "recordId": "vs-010"
+      }
+    },
+    {
+      "id": "aud-028",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-06T07:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-010",
+        "riskLevel": "WARNING"
+      }
+    },
+    {
+      "id": "aud-089",
+      "actionType": "AlertaCriticaGenerada",
+      "occurredAt": "2026-10-06T07:00:00.000Z",
+      "affectedResource": "pac-002",
+      "actorId": "sistema",
+      "metadata": {
+        "alertId": "alr-007",
+        "severity": "WARNING",
+        "triggerSource": "vital-sign:vs-010"
+      }
+    },
+    {
+      "id": "aud-122",
+      "actionType": "EntregaSbarRegistrada",
+      "occurredAt": "2026-10-06T07:00:00.000Z",
+      "affectedResource": "pac-005",
+      "actorId": "enf-001",
+      "metadata": {
+        "handoverId": "hvr-004",
+        "incomingNurseId": "enf-002"
+      }
+    },
+    {
+      "id": "aud-059",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-06T08:00:00.000Z",
+      "affectedResource": "pac-006",
+      "actorId": "enf-001",
+      "metadata": {
+        "recordId": "vs-026"
+      }
+    },
+    {
+      "id": "aud-060",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-06T08:00:00.000Z",
+      "affectedResource": "pac-006",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-026",
+        "riskLevel": "WARNING"
+      }
+    },
+    {
+      "id": "aud-102",
+      "actionType": "AlertaCriticaGenerada",
+      "occurredAt": "2026-10-06T08:00:00.000Z",
+      "affectedResource": "pac-006",
+      "actorId": "sistema",
+      "metadata": {
+        "alertId": "alr-014",
+        "severity": "WARNING",
+        "triggerSource": "vital-sign:vs-026"
+      }
+    },
+    {
+      "id": "aud-067",
+      "actionType": "SignosVitalesRegistrados",
+      "occurredAt": "2026-10-06T09:00:00.000Z",
+      "affectedResource": "pac-007",
+      "actorId": "enf-001",
+      "metadata": {
+        "recordId": "vs-030"
+      }
+    },
+    {
+      "id": "aud-068",
+      "actionType": "NivelDeRiesgoClinicoEvaluado",
+      "occurredAt": "2026-10-06T09:00:00.000Z",
+      "affectedResource": "pac-007",
+      "actorId": "sistema",
+      "metadata": {
+        "recordId": "vs-030",
+        "riskLevel": "NORMAL"
+      }
+    }
+  ]
+}
