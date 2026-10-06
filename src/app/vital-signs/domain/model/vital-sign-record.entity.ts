@@ -55,7 +55,7 @@ export class VitalSignRecord extends AggregateRoot {
     record.record(domainEvent('NivelDeRiesgoClinicoEvaluado', {
       recordId: record.id, patientId: input.patientId.value,
       riskLevel: record.riskLevel, measuredAt: record.measuredAt.toISOString(),
-      triggerSource: `vital-sign:${record.id}`,
+      triggerSource: `vital-sign:${record.id}`, reason: record.outOfRangeSummary(),
     }));
     return record;
   }
@@ -86,4 +86,31 @@ export class VitalSignRecord extends AggregateRoot {
   get oxygenSaturation(): number { return this.input.oxygenSaturation; }
   get temperature(): number { return this.input.temperature; }
   get corrects(): string | undefined { return this.input.corrects; }
+
+  /**
+   * Descripcion de los valores que se salieron de umbral, en el vocabulario del
+   * turno. La construye el agregado y no la vista, porque es el unico que conoce
+   * los umbrales con los que se evaluo: si la vista la compusiera, podria quedar
+   * describiendo una regla distinta de la que realmente se aplico.
+   */
+  outOfRangeSummary(): string {
+    const causas: string[] = [];
+    const { systolic } = this.bloodPressure;
+    const media = this.bloodPressure.meanArterialPressure;
+    if (this.oxygenSaturation < 90) causas.push(`saturacion de oxigeno en ${this.oxygenSaturation} %`);
+    else if (this.oxygenSaturation < 94) causas.push(`saturacion de oxigeno en descenso, ${this.oxygenSaturation} %`);
+    if (this.heartRate > 130) causas.push(`frecuencia cardiaca en ${this.heartRate} lpm`);
+    else if (this.heartRate > 110) causas.push(`taquicardia de ${this.heartRate} lpm`);
+    if (this.heartRate < 40) causas.push(`bradicardia de ${this.heartRate} lpm`);
+    else if (this.heartRate < 50) causas.push(`frecuencia cardiaca baja, ${this.heartRate} lpm`);
+    if (systolic > 180) causas.push(`sistolica en ${systolic} mmHg`);
+    else if (systolic > 160) causas.push(`sistolica elevada, ${systolic} mmHg`);
+    if (systolic < 90) causas.push(`hipotension con sistolica en ${systolic} mmHg`);
+    else if (systolic < 100) causas.push(`sistolica baja, ${systolic} mmHg`);
+    if (media < 65) causas.push(`presion arterial media en ${media} mmHg`);
+    if (this.temperature >= 39) causas.push(`temperatura en ${this.temperature} C`);
+    else if (this.temperature >= 38) causas.push(`febricula de ${this.temperature} C`);
+    if (this.temperature < 35) causas.push(`hipotermia de ${this.temperature} C`);
+    return causas.length ? `Valor fuera de umbral: ${causas.join('; ')}` : 'Valores dentro de rango';
+  }
 }

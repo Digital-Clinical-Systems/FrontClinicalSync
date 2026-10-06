@@ -39,3 +39,22 @@ describe('VitalSignRecord (BC-03) — invariantes del agregado', () => {
     expect(Object.isFrozen(r)).toBe(true);
   });
 });
+
+describe('VitalSignRecord — descripcion de los valores fuera de umbral', () => {
+  it('nombra cada valor que se salio de rango, en el vocabulario del turno', () => {
+    const r = VitalSignRecord.register({ ...base, oxygenSaturation: 85, heartRate: 140 });
+    const texto = r.outOfRangeSummary();
+    expect(texto).toContain('saturacion de oxigeno en 85 %');
+    expect(texto).toContain('frecuencia cardiaca en 140 lpm');
+  });
+
+  it('no inventa causas cuando todo esta dentro de rango', () => {
+    expect(VitalSignRecord.register(base).outOfRangeSummary()).toBe('Valores dentro de rango');
+  });
+
+  it('viaja en el evento que BC-04 consume, para que la alerta no muestre el enum tecnico', () => {
+    const evento = VitalSignRecord.register({ ...base, oxygenSaturation: 85 })
+      .pullEvents().find(e => e.name === 'NivelDeRiesgoClinicoEvaluado')!;
+    expect(String(evento.payload['reason'])).toContain('saturacion de oxigeno');
+  });
+});
