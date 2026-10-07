@@ -15,10 +15,10 @@ import { pacienteDeLaRuta } from '../../../shared/presentation/selected-patient'
   imports: [FormsModule],
   template: `
     <form class="card" (ngSubmit)="submit()" novalidate>
-      <h2>Registrar signos vitales &middot; US-18</h2>
+      <h2>Registrar signos vitales</h2>
       <p class="muted" style="font-size:.84rem;margin-top:-.4rem">
-        El nivel de riesgo no se elige: lo deriva el dominio de los valores medidos. Un valor
-        fuera de umbral genera por si solo la alerta en el contexto de alertas.
+        El estado del paciente no se elige: lo calcula el sistema a partir de los valores que
+        ingreses. Si alguno sale de los rangos definidos para la unidad, la alerta se genera sola.
       </p>
 
       <div class="field">

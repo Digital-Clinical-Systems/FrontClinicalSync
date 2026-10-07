@@ -33,22 +33,21 @@ const ACCION_LEGIBLE: Record<string, string> = {
     <header class="page-head">
       <h1>Bitacora de auditoria</h1>
       <p class="lead">
-        US-30, US-31 y US-32. Registro por anexion: las entradas no se modifican ni se borran,
-        y las genera el sistema al consumir los eventos de dominio, nunca el usuario. Ningun
-        contexto depende de la bitacora para completar su operacion.
+        Historial de todo lo ocurrido con cada paciente: que se hizo, quien lo hizo y a que hora.
+        Las entradas las escribe el sistema solo, y una vez escritas no se modifican ni se borran.
       </p>
     </header>
 
     <div class="toolbar">
       <div class="field">
-        <label for="a-paciente">Paciente &middot; US-32</label>
+        <label for="a-paciente">Paciente</label>
         <select id="a-paciente" name="aPaciente" [(ngModel)]="filtroPaciente">
           <option value="">Todos los pacientes</option>
           @for (p of patients.patients(); track p.id.value) {
             <option [value]="p.id.value">{{ p.fullName }}</option>
           }
         </select>
-        <span class="hint">Filtrar por paciente muestra el historial completo de ese registro.</span>
+        <span class="hint">Filtrar por paciente muestra su historial completo de cambios.</span>
       </div>
       <div class="field">
         <label for="a-accion">Tipo de accion</label>
@@ -58,7 +57,7 @@ const ACCION_LEGIBLE: Record<string, string> = {
         </select>
       </div>
       <div class="field">
-        <label for="a-actor">Responsable &middot; US-31</label>
+        <label for="a-actor">Responsable</label>
         <select id="a-actor" name="aActor" [(ngModel)]="filtroActor">
           <option value="">Todos</option>
           @for (u of actoresPresentes(); track u) { <option [value]="u">{{ directory.nameOf(u) }}</option> }

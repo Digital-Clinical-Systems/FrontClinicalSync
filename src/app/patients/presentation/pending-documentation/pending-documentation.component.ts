@@ -12,9 +12,9 @@ import { EmptyStateComponent } from '../../../shared/presentation/empty-state.co
     <header class="page-head">
       <h1>Documentacion pendiente</h1>
       <p class="lead">
-        US-21. Lo que el turno todavia no ha dejado registrado. Cada punto indica el motivo,
-        porque una lista de pendientes sin razon obliga a adivinar que hacer con ella.
-        Las reglas que la generan estan en la proyeccion de lectura del tablero, no en esta vista.
+        Lo que el turno todavia no ha dejado registrado, paciente por paciente. Cada punto
+        dice por que esta pendiente y lleva directo a la pantalla donde se resuelve, con el
+        paciente ya seleccionado.
       </p>
     </header>
 

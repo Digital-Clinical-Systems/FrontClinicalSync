@@ -25,15 +25,15 @@ import { HANDOVER_STATUS_LABEL, HANDOVER_STATUS_TONE } from '../../../shared/pre
     <header class="page-head">
       <h1>Traspasos SBAR</h1>
       <p class="lead">
-        El traspaso usa el formato SBAR, que es el que el personal de enfermeria declaro
-        en las entrevistas. Ninguna de las cuatro secciones puede ir vacia, el entrante debe
-        ser distinto del saliente, y solo el entrante puede acusar recibo.
+        La entrega del turno en formato SBAR: situacion, antecedentes, evaluacion y recomendacion.
+        Las cuatro secciones son obligatorias, y el traspaso no se da por recibido hasta que el
+        enfermero entrante lo confirma.
       </p>
     </header>
 
     <section class="card">
       <div class="card__head">
-        <h2>Recibidos por mi &middot; US-14 y US-15</h2>
+        <h2>Recibidos por mi</h2>
         <span class="muted" style="font-size:.82rem">{{ directory.nameOf(user.id().value) }}</span>
       </div>
       @if (error()) { <p class="notice notice--error" role="alert">{{ error() }}</p> }
@@ -75,11 +75,10 @@ import { HANDOVER_STATUS_LABEL, HANDOVER_STATUS_TONE } from '../../../shared/pre
     </section>
 
     <form class="card" (ngSubmit)="emitir()" novalidate>
-      <h2>Emitir traspaso &middot; US-13 y US-16</h2>
+      <h2>Emitir traspaso</h2>
       @if (!puedeEmitir().permitido) {
         <p class="notice notice--info">
           {{ puedeEmitir().motivo }}
-          La regla vive en el agregado Handover, no en esta pantalla: aqui solo se adelanta su explicacion.
         </p>
       }
 
@@ -109,8 +108,8 @@ import { HANDOVER_STATUS_LABEL, HANDOVER_STATUS_TONE } from '../../../shared/pre
           Pre-llenar con lo registrado
         </button>
         <span class="muted" style="font-size:.8rem">
-          US-16 &middot; compone el borrador con la ultima medicion, las alertas sin cerrar,
-          las indicaciones vigentes y las anotaciones del turno.
+          Arma el borrador con la ultima medicion, las alertas sin cerrar, las indicaciones
+          vigentes y lo anotado en el turno. Revisalo antes de emitirlo.
         </span>
       </div>
 

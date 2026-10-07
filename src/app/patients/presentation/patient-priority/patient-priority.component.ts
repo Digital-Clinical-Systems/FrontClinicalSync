@@ -13,9 +13,9 @@ import { RISK_TONE, RISK_LABEL } from '../../../shared/presentation/risk';
     <header class="page-head">
       <h1>Pacientes por prioridad</h1>
       <p class="lead">
-        US-29. El orden lo deriva el sistema del nivel de riesgo de la ultima medicion;
-        a igual riesgo pesa el numero de alertas sin cerrar y, despues, el tiempo transcurrido
-        sin control. Nadie asigna la prioridad a mano.
+        El orden lo calcula el sistema y nadie lo asigna a mano: primero quien tiene la ultima
+        medicion fuera de rango, luego quien acumula mas alertas sin cerrar y, en igualdad de
+        condiciones, quien lleva mas tiempo sin que le tomen un control.
       </p>
     </header>
 

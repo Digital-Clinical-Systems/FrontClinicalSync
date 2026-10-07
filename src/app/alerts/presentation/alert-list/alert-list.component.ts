@@ -20,9 +20,9 @@ import { pacienteDeLaRuta } from '../../../shared/presentation/selected-patient'
     <header class="page-head">
       <h1>Alertas clinicas</h1>
       <p class="lead">
-        US-28. Las genera el sistema cuando una medicion sale de umbral o cuando se registra
-        un evento clinico critico. Una alerta no se resuelve sin haber sido atendida antes:
-        esa regla vive en el agregado y no en esta pantalla.
+        El sistema avisa cuando una medicion sale de los rangos definidos para la unidad o
+        cuando alguien registra un hecho critico. Una alerta no se puede cerrar sin que antes
+        alguien se haya hecho cargo de ella.
       </p>
     </header>
 

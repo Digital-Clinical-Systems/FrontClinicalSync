@@ -27,9 +27,9 @@ const SEVERITY_TONE: Record<string, ChipTone> = {
     <header class="page-head">
       <h1>Registros del turno</h1>
       <p class="lead">
-        US-19 y US-20. Constancia de los medicamentos administrados y de los eventos clinicos
-        relevantes. Un registro marcado como critico genera una alerta en el contexto de alertas,
-        que es la segunda fuente de alertas del sistema junto a los signos vitales fuera de umbral.
+        Constancia de los medicamentos que administras y de los hechos relevantes del turno:
+        un episodio de dolor, una complicacion, lo que observaste y que hiciste. Si marcas un
+        registro como critico, el equipo recibe la alerta de inmediato.
       </p>
     </header>
 

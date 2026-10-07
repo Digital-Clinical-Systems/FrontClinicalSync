@@ -29,8 +29,8 @@ import { RISK_TONE, RISK_LABEL, ALERT_STATUS_LABEL, ALERT_STATUS_TONE } from '..
         <div>
           <h1>Resumen del paciente</h1>
           <p class="lead" style="margin-bottom:0">
-            US-26 y US-27. Estado actual y evolucion reciente en una sola pantalla. El nivel
-            de riesgo lo deriva el dominio de signos vitales; esta vista solo lo lee.
+            Todo lo que necesitas saber del paciente en una sola pantalla: como esta ahora,
+            como viene evolucionando, que tiene indicado y que se le registro en el turno.
           </p>
         </div>
         <div class="field" style="margin:0;min-width:260px">

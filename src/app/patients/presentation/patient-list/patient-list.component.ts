@@ -14,8 +14,9 @@ import { RISK_TONE, RISK_LABEL } from '../../../shared/presentation/risk';
     <header class="page-head">
       <h1>Pacientes del turno</h1>
       <p class="lead">
-        Pacientes asignados a la unidad, con el estado que arroja su ultima medicion.
-        BC-02 actua como directorio maestro: ningun otro contexto crea pacientes.
+        Pacientes a cargo del turno, con el estado que arroja su ultima medicion.
+        Entra al resumen de cualquiera para ver su evolucion, sus indicaciones y lo que
+        se registro durante el turno.
       </p>
     </header>
 

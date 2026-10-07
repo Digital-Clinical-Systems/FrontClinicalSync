@@ -21,10 +21,9 @@ import { pacienteDeLaRuta } from '../../../shared/presentation/selected-patient'
     <header class="page-head">
       <h1>Indicaciones medicas</h1>
       <p class="lead">
-        Una indicacion no se edita: para cambiarla se emite una nueva que reemplaza a la
-        anterior, y la anterior queda en el historial. El registro de cumplimiento lo hace
-        enfermeria, nunca quien prescribio, porque su valor esta en acreditar que la orden
-        llego a quien debia ejecutarla.
+        Una indicacion no se edita: para cambiarla se emite una nueva y la anterior queda en el
+        historial, de modo que siempre se puede saber que estaba indicado en cada momento.
+        El cumplimiento lo registra enfermeria al administrarla, nunca quien la prescribio.
       </p>
     </header>
 
@@ -36,7 +35,7 @@ import { pacienteDeLaRuta } from '../../../shared/presentation/selected-patient'
       <div class="stat" [class.stat--warning]="store.pendingCount() > 0">
         <p class="stat__label">Sin cumplimiento</p>
         <p class="stat__value">{{ store.pendingCount() }}</p>
-        <p class="stat__hint">US-25 &middot; vigentes que nadie ha ejecutado</p>
+        <p class="stat__hint">Vigentes que nadie ha ejecutado todavia</p>
       </div>
       <div class="stat">
         <p class="stat__label">Historial</p>
@@ -75,7 +74,7 @@ import { pacienteDeLaRuta } from '../../../shared/presentation/selected-patient'
     }
 
     <section class="card card--flush">
-      <div class="card__head"><h2>Indicaciones &middot; US-23 y US-25</h2></div>
+      <div class="card__head"><h2>Indicaciones del servicio</h2></div>
       <div class="table-wrap">
         <table class="data">
           <thead>
@@ -138,12 +137,10 @@ import { pacienteDeLaRuta } from '../../../shared/presentation/selected-patient'
     </section>
 
     <form class="card" (ngSubmit)="emitir()" novalidate>
-      <h2>Emitir indicacion &middot; US-22</h2>
+      <h2>Emitir indicacion</h2>
       @if (!puedeEmitir().permitido) {
         <p class="notice notice--info">
           {{ puedeEmitir().motivo }}
-          La regla la impone el agregado MedicalOrder, no esta pantalla: el formulario solo
-          se adelanta a explicarla.
         </p>
       }
       <div class="form-grid">
