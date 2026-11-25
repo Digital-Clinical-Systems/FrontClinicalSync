@@ -1,66 +1,86 @@
 import { Routes } from '@angular/router';
+import { sesionAusente, sesionIniciada } from './iam/application/auth.guard';
 
+/**
+ * La aplicacion tiene dos zonas: la pantalla de ingreso, accesible sin sesion, y
+ * el resto, que vive bajo una ruta de disposicion protegida por la guarda. Asi
+ * el armazon con la navegacion nunca se monta sin un profesional autenticado.
+ */
 export const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'pacientes' },
   {
-    path: 'pacientes',
-    title: 'Pacientes del turno | ClinicalSync',
-    loadComponent: () => import('./patients/presentation/patient-list/patient-list.component')
-      .then(m => m.PatientListComponent),
+    path: 'ingresar',
+    title: 'Iniciar sesion | ClinicalSync',
+    canActivate: [sesionAusente],
+    loadComponent: () => import('./iam/presentation/login/login.component')
+      .then(m => m.LoginComponent),
   },
   {
-    path: 'prioridad',
-    title: 'Pacientes por prioridad | ClinicalSync',
-    loadComponent: () => import('./patients/presentation/patient-priority/patient-priority.component')
-      .then(m => m.PatientPriorityComponent),
+    path: '',
+    canActivate: [sesionIniciada],
+    loadComponent: () => import('./layout/shell.component').then(m => m.ShellComponent),
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'pacientes' },
+      {
+        path: 'pacientes',
+        title: 'Pacientes del turno | ClinicalSync',
+        loadComponent: () => import('./patients/presentation/patient-list/patient-list.component')
+          .then(m => m.PatientListComponent),
+      },
+      {
+        path: 'prioridad',
+        title: 'Pacientes por prioridad | ClinicalSync',
+        loadComponent: () => import('./patients/presentation/patient-priority/patient-priority.component')
+          .then(m => m.PatientPriorityComponent),
+      },
+      {
+        path: 'signos-vitales',
+        title: 'Signos vitales | ClinicalSync',
+        loadComponent: () => import('./vital-signs/presentation/vital-signs-dashboard/vital-signs-dashboard.component')
+          .then(m => m.VitalSignsDashboardComponent),
+      },
+      {
+        path: 'registros',
+        title: 'Registros del turno | ClinicalSync',
+        loadComponent: () => import('./clinical-events/presentation/clinical-event-form/clinical-event-form.component')
+          .then(m => m.ClinicalEventFormComponent),
+      },
+      {
+        path: 'resumen-paciente',
+        title: 'Resumen del paciente | ClinicalSync',
+        loadComponent: () => import('./vital-signs/presentation/patient-summary/patient-summary.component')
+          .then(m => m.PatientSummaryComponent),
+      },
+      {
+        path: 'indicaciones',
+        title: 'Indicaciones medicas | ClinicalSync',
+        loadComponent: () => import('./medical-orders/presentation/medical-order-form/medical-order-form.component')
+          .then(m => m.MedicalOrderFormComponent),
+      },
+      {
+        path: 'traspasos',
+        title: 'Traspasos SBAR | ClinicalSync',
+        loadComponent: () => import('./handover/presentation/handover-form/handover-form.component')
+          .then(m => m.HandoverFormComponent),
+      },
+      {
+        path: 'alertas',
+        title: 'Alertas clinicas | ClinicalSync',
+        loadComponent: () => import('./alerts/presentation/alert-list/alert-list.component')
+          .then(m => m.AlertListComponent),
+      },
+      {
+        path: 'pendientes',
+        title: 'Documentacion pendiente | ClinicalSync',
+        loadComponent: () => import('./patients/presentation/pending-documentation/pending-documentation.component')
+          .then(m => m.PendingDocumentationComponent),
+      },
+      {
+        path: 'auditoria',
+        title: 'Bitacora de auditoria | ClinicalSync',
+        loadComponent: () => import('./audit/presentation/audit-log-list/audit-log-list.component')
+          .then(m => m.AuditLogListComponent),
+      },
+    ],
   },
-  {
-    path: 'signos-vitales',
-    title: 'Signos vitales | ClinicalSync',
-    loadComponent: () => import('./vital-signs/presentation/vital-signs-dashboard/vital-signs-dashboard.component')
-      .then(m => m.VitalSignsDashboardComponent),
-  },
-  {
-    path: 'registros',
-    title: 'Registros del turno | ClinicalSync',
-    loadComponent: () => import('./clinical-events/presentation/clinical-event-form/clinical-event-form.component')
-      .then(m => m.ClinicalEventFormComponent),
-  },
-  {
-    path: 'resumen-paciente',
-    title: 'Resumen del paciente | ClinicalSync',
-    loadComponent: () => import('./vital-signs/presentation/patient-summary/patient-summary.component')
-      .then(m => m.PatientSummaryComponent),
-  },
-  {
-    path: 'indicaciones',
-    title: 'Indicaciones medicas | ClinicalSync',
-    loadComponent: () => import('./medical-orders/presentation/medical-order-form/medical-order-form.component')
-      .then(m => m.MedicalOrderFormComponent),
-  },
-  {
-    path: 'traspasos',
-    title: 'Traspasos SBAR | ClinicalSync',
-    loadComponent: () => import('./handover/presentation/handover-form/handover-form.component')
-      .then(m => m.HandoverFormComponent),
-  },
-  {
-    path: 'alertas',
-    title: 'Alertas clinicas | ClinicalSync',
-    loadComponent: () => import('./alerts/presentation/alert-list/alert-list.component')
-      .then(m => m.AlertListComponent),
-  },
-  {
-    path: 'pendientes',
-    title: 'Documentacion pendiente | ClinicalSync',
-    loadComponent: () => import('./patients/presentation/pending-documentation/pending-documentation.component')
-      .then(m => m.PendingDocumentationComponent),
-  },
-  {
-    path: 'auditoria',
-    title: 'Bitacora de auditoria | ClinicalSync',
-    loadComponent: () => import('./audit/presentation/audit-log-list/audit-log-list.component')
-      .then(m => m.AuditLogListComponent),
-  },
-  { path: '**', redirectTo: 'pacientes' },
+  { path: '**', redirectTo: '' },
 ];

@@ -1,6 +1,6 @@
-import { ApplicationConfig, provideZoneChangeDetection, inject, provideAppInitializer } from '@angular/core';
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
 
 import { PATIENT_REPOSITORY } from './patients/domain/services/patient.repository';
@@ -19,26 +19,27 @@ import { CLINICAL_EVENT_REPOSITORY } from './clinical-events/domain/services/cli
 import { ClinicalEventHttpRepository } from './clinical-events/infrastructure/clinical-event-http.repository';
 import { USER_REPOSITORY } from './iam/domain/services/user.repository';
 import { UserHttpRepository } from './iam/infrastructure/user-http.repository';
-
-import { DirectoryStore } from './iam/application/directory.store';
-import { PatientsStore } from './patients/application/patients.store';
-import { VitalSignsStore } from './vital-signs/application/vital-signs.store';
-import { MedicalOrdersStore } from './medical-orders/application/medical-orders.store';
-import { HandoverStore } from './handover/application/handover.store';
-import { AlertsStore } from './alerts/application/alerts.store';
-import { ClinicalEventsStore } from './clinical-events/application/clinical-events.store';
-import { AuditStore } from './audit/application/audit.store';
+import { AUTH_REPOSITORY } from './iam/domain/services/auth.repository';
+import { AuthHttpRepository } from './iam/infrastructure/auth-http.repository';
+import { authInterceptor } from './iam/infrastructure/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withComponentInputBinding()),
-    provideHttpClient(withFetch()),
 
-    // Adaptadores HTTP contra la fake API. Cada token es el unico punto que hay
-    // que tocar cuando exista el backend con base de datos: el dominio y la capa
-    // de aplicacion no cambian. Los adaptadores en memoria siguen implementando
-    // los mismos puertos y pueden reemplazar a estos sin otra modificacion.
+    // El interceptor firma con el token de la sesion toda peticion dirigida al
+    // backend propio, y cierra la sesion si el API la rechaza.
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
+
+    // Autenticacion contra el RESTful API de ClinicalSync.
+    { provide: AUTH_REPOSITORY, useClass: AuthHttpRepository },
+
+    // Adaptadores HTTP de los datos clinicos. Cada token es el unico punto que
+    // hay que tocar para migrar un contexto del servicio de demostracion al API
+    // persistente: el dominio y la capa de aplicacion no cambian. Los
+    // adaptadores en memoria implementan los mismos puertos y pueden reemplazar
+    // a estos sin otra modificacion.
     { provide: PATIENT_REPOSITORY, useClass: PatientHttpRepository },
     { provide: VITAL_SIGN_REPOSITORY, useClass: VitalSignHttpRepository },
     { provide: ALERT_REPOSITORY, useClass: AlertHttpRepository },
@@ -48,24 +49,7 @@ export const appConfig: ApplicationConfig = {
     { provide: AUDIT_LOG_REPOSITORY, useClass: AuditLogHttpRepository },
     { provide: USER_REPOSITORY, useClass: UserHttpRepository },
 
-    provideAppInitializer(() => {
-      // Alerts y Audit se instancian primero para que ningun evento se pierda.
-      const alerts = inject(AlertsStore);
-      const audit = inject(AuditStore);
-      const directory = inject(DirectoryStore);
-      const patients = inject(PatientsStore);
-      const vitalSigns = inject(VitalSignsStore);
-      const orders = inject(MedicalOrdersStore);
-      const handovers = inject(HandoverStore);
-      const events = inject(ClinicalEventsStore);
-
-      // La carga es independiente entre contextos: ninguno necesita el estado de
-      // otro para reconstruirse, porque lo unico que cruza la frontera son
-      // identificadores. Por eso se resuelven en paralelo.
-      return Promise.all([
-        directory.load(), patients.load(), vitalSigns.load(),
-        orders.load(), handovers.load(), events.load(), alerts.load(), audit.load(),
-      ]).then(() => undefined);
-    }),
+    // La carga del estado clinico ya no ocurre al arrancar: la dispara el
+    // armazon, que solo se monta con sesion iniciada. Vease DataBootstrap.
   ],
 };

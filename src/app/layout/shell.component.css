@@ -15,11 +15,12 @@
 .topbar__unit { font-size: .8rem; color: #a5b4cf; flex: 1; }
 .identity { display: flex; align-items: center; gap: .6rem; }
 .identity__name { font-size: .82rem; color: #e2e8f0; }
-.identity__switch select {
-  background: #fff; color: var(--cs-navy); border: 0; border-radius: 6px;
-  padding: .25rem .45rem; font-size: .8rem; width: auto;
+/* Rol en curso: ya no se elige, lo determina la sesion autenticada. */
+.identity__role {
+  font-size: .75rem; font-weight: 600; letter-spacing: .02em;
+  color: #d1fae5; background: #064e3b; border: 1px solid #065f46;
+  border-radius: 999px; padding: .18rem .6rem; white-space: nowrap;
 }
-.identity__switch select:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
 .identity__help {
   font: inherit; font-size: .78rem; font-weight: 600; color: #fff;
   background: transparent; border: 1px solid #44557a; border-radius: 6px;
@@ -27,6 +28,13 @@
 }
 .identity__help:hover { background: #1e3a8a; }
 .identity__help:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.identity__exit {
+  font: inherit; font-size: .78rem; font-weight: 600; color: #cbd5e1;
+  background: transparent; border: 1px solid #44557a; border-radius: 6px;
+  padding: .25rem .55rem; cursor: pointer; white-space: nowrap;
+}
+.identity__exit:hover { background: #7f1d1d; border-color: #991b1b; color: #fff; }
+.identity__exit:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
 
 /* --- Panel de capacidades ------------------------------------------------ */
 .capacidades {

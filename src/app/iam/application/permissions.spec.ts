@@ -19,8 +19,17 @@ describe('Permissions — lo que la interfaz anticipa del dominio', () => {
     usuario = TestBed.inject(CurrentUser);
   });
 
-  const comoEnfermeria = () => usuario.switchTo(Role.Nurse);
-  const comoMedico = () => usuario.switchTo(Role.Physician);
+  /**
+   * Coloca una sesion con el rol indicado. Sustituye al selector de rol de
+   * demostracion: ahora la identidad proviene del API, de modo que la prueba
+   * establece la sesion que el inicio de sesion habria producido.
+   */
+  const conRol = (rol: Role, username: string) => usuario.establecer({
+    id: '1', username, fullName: 'Profesional de prueba', roles: [rol], token: 'token-de-prueba',
+  });
+
+  const comoEnfermeria = () => conRol(Role.Nurse, 'enf-001');
+  const comoMedico = () => conRol(Role.Physician, 'med-001');
 
   it('toda denegacion lleva un motivo redactado', () => {
     comoEnfermeria();

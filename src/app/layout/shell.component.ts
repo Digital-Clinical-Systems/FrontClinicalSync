@@ -1,6 +1,8 @@
 import { Component, inject, computed, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { CurrentUser, DEMO_ROLES, DemoRole } from '../iam/domain/model/current-user';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { CurrentUser } from '../iam/domain/model/current-user';
+import { SessionStore } from '../iam/application/session.store';
+import { DataBootstrap } from './data-bootstrap';
 import { Role } from '../iam/domain/model/role.enum';
 import { DirectoryStore } from '../iam/application/directory.store';
 import { Permissions } from '../iam/application/permissions';
@@ -34,19 +36,13 @@ const CLAVE_BARRA = 'clinicalsync.barra-colapsada';
       </span>
       <span class="topbar__unit">UCI Cardiovascular &middot; turno en curso</span>
       <div class="identity">
-        <span class="identity__name">{{ directory.nameOf(user.id().value) }}</span>
-        <label class="identity__switch">
-          <span class="sr-only">Rol con el que se recorre la demostracion</span>
-          <select [value]="user.role()" (change)="switchRole($any($event.target).value)">
-            @for (r of roles; track r) {
-              <option [value]="r" [selected]="r === user.role()">{{ permisos.etiquetaRol[r] }}</option>
-            }
-          </select>
-        </label>
+        <span class="identity__name">{{ user.displayName() }}</span>
+        <span class="identity__role">{{ permisos.etiquetaRol[user.role()] }}</span>
         <button type="button" class="identity__help" (click)="verCapacidades.set(!verCapacidades())"
                 [attr.aria-expanded]="verCapacidades()" aria-controls="panel-capacidades">
           Que puedo hacer
         </button>
+        <button type="button" class="identity__exit" (click)="salir()">Salir</button>
       </div>
     </header>
 
@@ -109,8 +105,11 @@ export class ShellComponent {
   readonly handovers = inject(HandoverStore);
   readonly orders = inject(MedicalOrdersStore);
   readonly board = inject(ShiftBoardFacade);
-  readonly roles = DEMO_ROLES;
   readonly verCapacidades = signal(false);
+  private readonly sesion = inject(SessionStore);
+  private readonly datos = inject(DataBootstrap);
+  private readonly router = inject(Router);
+  readonly cargando = this.datos.cargando;
   readonly colapsada = signal(leerPreferencia());
 
   private readonly turno: Grupo = {
@@ -155,7 +154,18 @@ export class ShellComponent {
       ? [this.turno, this.seguimiento, this.registro]
       : [this.turno, this.registro, this.seguimiento]);
 
-  switchRole(role: DemoRole): void { this.user.switchTo(role); }
+  constructor() {
+    // El armazon solo se monta con sesion iniciada, de modo que este es el
+    // primer momento en que las peticiones pueden viajar firmadas.
+    void this.datos.cargar();
+  }
+
+  /** Cierra la sesion, olvida el estado cargado y devuelve al ingreso. */
+  async salir(): Promise<void> {
+    this.sesion.signOut();
+    this.datos.reiniciar();
+    await this.router.navigate(['/ingresar']);
+  }
 
   alternarBarra(): void {
     const valor = !this.colapsada();
