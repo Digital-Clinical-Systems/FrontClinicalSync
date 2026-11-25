@@ -7,6 +7,8 @@ import { HandoverStore } from '../handover/application/handover.store';
 import { AlertsStore } from '../alerts/application/alerts.store';
 import { ClinicalEventsStore } from '../clinical-events/application/clinical-events.store';
 import { AuditStore } from '../audit/application/audit.store';
+import { CurrentUser } from '../iam/domain/model/current-user';
+import { Role } from '../iam/domain/model/role.enum';
 
 /**
  * Carga inicial del estado clinico.
@@ -30,6 +32,10 @@ export class DataBootstrap {
   // Alertas y bitacora se resuelven primero para que ningun evento se pierda.
   private readonly alerts = inject(AlertsStore);
   private readonly audit = inject(AuditStore);
+  private readonly usuario = inject(CurrentUser);
+
+  /** La bitacora solo es legible por coordinacion y auditoria (TS-06). */
+  private static readonly LEEN_BITACORA: readonly Role[] = [Role.Coordinator, Role.Auditor];
 
   private enCurso: Promise<void> | null = null;
   readonly cargando = signal(false);
@@ -44,11 +50,17 @@ export class DataBootstrap {
     // La carga es independiente entre contextos: ninguno necesita el estado de
     // otro para reconstruirse, porque lo unico que cruza la frontera son
     // identificadores. Por eso se resuelven en paralelo.
-    this.enCurso = Promise.all([
+    const cargas = [
       this.directory.load(), this.patients.load(), this.vitalSigns.load(),
-      this.orders.load(), this.handovers.load(), this.events.load(),
-      this.alerts.load(), this.audit.load(),
-    ]).then(() => undefined).finally(() => this.cargando.set(false));
+      this.orders.load(), this.handovers.load(), this.events.load(), this.alerts.load(),
+    ];
+    // El API aplica los roles de verdad: pedir la bitacora con un rol que no la
+    // lee devolveria 403. Se omite en lugar de provocar un error que el
+    // profesional no puede resolver.
+    if (DataBootstrap.LEEN_BITACORA.includes(this.usuario.role())) {
+      cargas.push(this.audit.load());
+    }
+    this.enCurso = Promise.all(cargas).then(() => undefined).finally(() => this.cargando.set(false));
     return this.enCurso;
   }
 

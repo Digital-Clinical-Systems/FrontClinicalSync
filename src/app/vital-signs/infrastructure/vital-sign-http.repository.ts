@@ -19,7 +19,7 @@ export class VitalSignHttpRepository implements VitalSignRepository {
   private records: VitalSignRecord[] = [];
 
   async load(): Promise<void> {
-    const dtos = await this.api.list<VitalSignDto>('vitalSigns');
+    const dtos = await this.api.list<VitalSignDto>('vital-signs');
     this.records = dtos
       .map(dto => VitalSignRecord.fromPersistence(
         {
@@ -42,7 +42,7 @@ export class VitalSignHttpRepository implements VitalSignRepository {
   }
   save(record: VitalSignRecord): void {
     this.records.push(record);
-    void this.api.post('vitalSigns', {
+    void this.api.post('vital-signs', {
       id: record.id, patientId: record.patientId.value, recordedBy: record.recordedBy.value,
       systolic: record.bloodPressure.systolic, diastolic: record.bloodPressure.diastolic,
       heartRate: record.heartRate, oxygenSaturation: record.oxygenSaturation,

@@ -17,7 +17,7 @@ export class ClinicalEventHttpRepository implements ClinicalEventRepository {
   private readonly api = inject(ClinicalApi);
 
   async load(): Promise<ClinicalEvent[]> {
-    const dtos = await this.api.list<ClinicalEventDto>('clinicalEvents');
+    const dtos = await this.api.list<ClinicalEventDto>('clinical-events');
     return dtos
       .map(dto => ClinicalEvent.fromPersistence({
         patientId: PatientId.of(dto.patientId),
@@ -30,7 +30,7 @@ export class ClinicalEventHttpRepository implements ClinicalEventRepository {
   }
 
   save(event: ClinicalEvent): void {
-    void this.api.post('clinicalEvents', {
+    void this.api.post('clinical-events', {
       id: event.id, patientId: event.patientId.value, recordedBy: event.recordedBy.value,
       type: event.type, severity: event.severity, description: event.description,
       medication: event.medication ?? null, dose: event.dose ?? null,

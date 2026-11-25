@@ -20,9 +20,17 @@ export class AlertHttpRepository implements AlertRepository {
       .sort((a, b) => b.raisedAt.getTime() - a.raisedAt.getTime());
   }
 
+  /**
+   * El API expresa el ciclo de vida de la alerta con transiciones explicitas y
+   * no con una actualizacion de estado: acusar y resolver son operaciones
+   * distintas, cada una comprueba sus propias reglas, y el profesional que
+   * actua sale del token y no del cuerpo de la peticion.
+   */
   save(alert: Alert): void {
-    void this.api.patch('alerts', alert.id, {
-      status: alert.status, acknowledgedBy: alert.acknowledgedBy?.value ?? null,
-    });
+    if (alert.status === AlertStatus.Acknowledged) {
+      void this.api.action('alerts', alert.id, 'acknowledge');
+    } else if (alert.status === AlertStatus.Resolved) {
+      void this.api.action('alerts', alert.id, 'resolve');
+    }
   }
 }

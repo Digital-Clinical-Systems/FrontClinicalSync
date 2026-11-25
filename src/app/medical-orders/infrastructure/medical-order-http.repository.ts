@@ -18,7 +18,7 @@ export class MedicalOrderHttpRepository implements MedicalOrderRepository {
   private readonly api = inject(ClinicalApi);
 
   async load(): Promise<MedicalOrder[]> {
-    const dtos = await this.api.list<MedicalOrderDto>('medicalOrders');
+    const dtos = await this.api.list<MedicalOrderDto>('medical-orders');
     return dtos
       .map(dto => MedicalOrder.fromPersistence({
         ...dto,
@@ -28,7 +28,7 @@ export class MedicalOrderHttpRepository implements MedicalOrderRepository {
   }
 
   save(order: MedicalOrder): void {
-    void this.api.post('medicalOrders', {
+    void this.api.post('medical-orders', {
       id: order.id, patientId: order.patientId.value, prescribedBy: order.prescribedBy.value,
       medication: order.dosage.medication, dose: order.dosage.dose,
       route: order.dosage.route, frequency: order.dosage.frequency,

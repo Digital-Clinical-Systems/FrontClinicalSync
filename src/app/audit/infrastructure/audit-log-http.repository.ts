@@ -13,14 +13,14 @@ export class AuditLogHttpRepository implements AuditLogRepository {
   private readonly api = inject(ClinicalApi);
 
   async load(): Promise<AuditLog[]> {
-    const dtos = await this.api.list<AuditLogDto>('auditLogs');
+    const dtos = await this.api.list<AuditLogDto>('audit-logs');
     return dtos
       .map(dto => AuditLog.fromPersistence(dto))
       .sort((a, b) => b.occurredAt.getTime() - a.occurredAt.getTime());
   }
 
   append(log: AuditLog): void {
-    void this.api.post('auditLogs', {
+    void this.api.post('audit-logs', {
       id: log.id, actionType: log.actionType, occurredAt: log.occurredAt.toISOString(),
       affectedResource: log.affectedResource, actorId: log.actorId, metadata: log.metadata,
     });
