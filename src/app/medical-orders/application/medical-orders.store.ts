@@ -26,27 +26,37 @@ export class MedicalOrdersStore {
   }
   pending(): MedicalOrder[] { return this.orders().filter(o => o.isPending); }
 
-  issue(
+  /**
+   * Emitir con reemplazo cambia dos agregados: la indicacion nueva nace vigente
+   * y la anterior queda reemplazada. El API lo resuelve en una sola operacion a
+   * partir de la referencia, de modo que en lugar de deducir aqui el estado de
+   * la anterior se vuelve a leer la coleccion: el reemplazo que queda en
+   * pantalla es el que quedo registrado.
+   */
+  async issue(
     patientId: PatientId, prescriber: UserId, role: Role, dosage: Dosage, replacesOrderId?: string,
-  ): MedicalOrder {
+  ): Promise<MedicalOrder> {
     const previous = replacesOrderId ? this.orders().find(o => o.id === replacesOrderId) : undefined;
     if (replacesOrderId && !previous) throw new Error('La indicacion a reemplazar no existe');
 
-    const order = MedicalOrder.issue(patientId, prescriber, role, dosage, replacesOrderId);
-    previous?.supersede(order);
-
-    this.orders.update(l => [order, ...l]);
-    this.repo.save(order);
-    if (previous) this.repo.save(previous);
-    for (const e of [...order.pullEvents(), ...(previous?.pullEvents() ?? [])]) this.bus.publish(e);
-    return order;
+    const local = MedicalOrder.issue(patientId, prescriber, role, dosage, replacesOrderId);
+    const guardado = await this.repo.save(local);
+    if (previous) {
+      previous.supersede(guardado);   // comprueba la regla y deja el evento listo
+      await this.load();
+    } else {
+      this.orders.update(l => [guardado, ...l]);
+    }
+    for (const e of [...local.pullEvents(), ...(previous?.pullEvents() ?? [])]) this.bus.publish(e);
+    return guardado;
   }
 
-  /** US-24. */
-  fulfill(order: MedicalOrder, by: UserId, byRole: Role): void {
+  /** US-24. El rol y el estado se comprueban aqui y los vuelve a exigir el API. */
+  async fulfill(order: MedicalOrder, by: UserId, byRole: Role): Promise<MedicalOrder> {
     order.fulfill(by, byRole);
-    this.orders.update(l => [...l]);
-    this.repo.save(order);
+    const guardado = await this.repo.fulfill(order);
+    this.orders.update(l => l.map(o => (o.id === guardado.id ? guardado : o)));
     for (const e of order.pullEvents()) this.bus.publish(e);
+    return guardado;
   }
 }

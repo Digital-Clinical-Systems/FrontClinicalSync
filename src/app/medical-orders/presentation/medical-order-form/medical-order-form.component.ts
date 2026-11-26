@@ -180,7 +180,9 @@ import { pacienteDeLaRuta } from '../../../shared/presentation/selected-patient'
         </div>
       </div>
       <div class="form-actions">
-        <button type="submit" class="btn btn--primary" [disabled]="!puedeEmitir().permitido">Emitir indicacion</button>
+        <button type="submit" class="btn btn--primary" [disabled]="!puedeEmitir().permitido || enviando()">
+          {{ enviando() ? 'Emitiendo...' : 'Emitir indicacion' }}
+        </button>
       </div>
     </form>
   `,
@@ -233,23 +235,38 @@ export class MedicalOrderFormComponent {
     });
   });
 
-  emitir(): void {
+
+  /**
+   * Con la confirmacion del servidor de por medio la emision deja de ser
+   * inmediata, de modo que un segundo envio mientras el primero viaja emitiria
+   * dos veces lo mismo. El boton queda inhabilitado hasta que la peticion
+   * termina, de una forma o de otra.
+   */
+  readonly enviando = signal(false);
+
+  async emitir(): Promise<void> {
+    if (this.enviando()) return;
     this.error.set(''); this.ok.set('');
+    this.enviando.set(true);
     try {
-      this.store.issue(
+      await this.store.issue(
         PatientId.of(this.pacienteId), this.user.id(), this.user.role(),
         Dosage.of(this.medicamento, this.dosis, this.via, this.frecuencia),
         this.reemplazaId || undefined,
       );
       this.ok.set('Indicacion emitida.');
       this.medicamento = ''; this.dosis = ''; this.reemplazaId = '';
-    } catch (e) { this.error.set((e as Error).message); }
+    } catch (e) {
+      this.error.set((e as Error).message);
+    } finally {
+      this.enviando.set(false);
+    }
   }
 
-  cumplir(o: MedicalOrder): void {
+  async cumplir(o: MedicalOrder): Promise<void> {
     this.error.set(''); this.ok.set('');
     try {
-      this.store.fulfill(o, this.user.id(), this.user.role());
+      await this.store.fulfill(o, this.user.id(), this.user.role());
       this.ok.set('Cumplimiento registrado.');
     } catch (e) { this.error.set((e as Error).message); }
   }
