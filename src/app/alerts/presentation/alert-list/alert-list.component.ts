@@ -145,14 +145,14 @@ export class AlertListComponent {
   tonoEstado(s: string) { return ALERT_STATUS_TONE[s] ?? 'neutral'; }
   etiquetaEstado(s: string) { return ALERT_STATUS_LABEL[s] ?? s; }
 
-  atender(a: Alert): void {
+  async atender(a: Alert): Promise<void> {
     this.error.set('');
-    try { this.store.acknowledge(a, this.user.id()); }
+    try { await this.store.acknowledge(a, this.user.id()); }
     catch (e) { this.error.set((e as Error).message); }
   }
-  resolver(a: Alert): void {
+  async resolver(a: Alert): Promise<void> {
     this.error.set('');
-    try { this.store.resolve(a, this.user.id()); }
+    try { await this.store.resolve(a, this.user.id()); }
     catch (e) { this.error.set((e as Error).message); }
   }
 }

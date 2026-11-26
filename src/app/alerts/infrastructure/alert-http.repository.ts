@@ -9,28 +9,36 @@ interface AlertDto {
   reason: string; status: AlertStatus; raisedAt: string; acknowledgedBy?: string | null;
 }
 
+/**
+ * Adaptador HTTP de BC-04.
+ *
+ * El API no expone un alta de alertas, y es correcto que no lo haga: una alerta
+ * no se declara, se deriva. La politica vive en el servidor y se dispara con los
+ * eventos de signos vitales y de eventos clinicos, de modo que este adaptador
+ * solo lee y transiciona lo que la politica ya levanto.
+ */
 @Injectable()
 export class AlertHttpRepository implements AlertRepository {
   private readonly api = inject(ClinicalApi);
 
+  private desde(dto: AlertDto): Alert { return Alert.fromPersistence(dto); }
+
   async load(): Promise<Alert[]> {
     const dtos = await this.api.list<AlertDto>('alerts');
-    return dtos
-      .map(dto => Alert.fromPersistence(dto))
+    return dtos.map(dto => this.desde(dto))
       .sort((a, b) => b.raisedAt.getTime() - a.raisedAt.getTime());
   }
 
   /**
-   * El API expresa el ciclo de vida de la alerta con transiciones explicitas y
-   * no con una actualizacion de estado: acusar y resolver son operaciones
-   * distintas, cada una comprueba sus propias reglas, y el profesional que
-   * actua sale del token y no del cuerpo de la peticion.
+   * El ciclo de vida se expresa con transiciones explicitas y no con una
+   * actualizacion de estado: acusar y resolver son operaciones distintas, cada
+   * una comprueba sus propias reglas, y quien actua sale del token.
    */
-  save(alert: Alert): void {
-    if (alert.status === AlertStatus.Acknowledged) {
-      void this.api.action('alerts', alert.id, 'acknowledge');
-    } else if (alert.status === AlertStatus.Resolved) {
-      void this.api.action('alerts', alert.id, 'resolve');
-    }
+  async acknowledge(alert: Alert): Promise<Alert> {
+    return this.desde(await this.api.action<AlertDto>('alerts', alert.id, 'acknowledge'));
+  }
+
+  async resolve(alert: Alert): Promise<Alert> {
+    return this.desde(await this.api.action<AlertDto>('alerts', alert.id, 'resolve'));
   }
 }
