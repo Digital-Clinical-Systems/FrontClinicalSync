@@ -11,5 +11,8 @@ export class VitalSignInMemoryRepository implements VitalSignRepository {
   findByPatient(id: PatientId): VitalSignRecord[] {
     return this.records.filter(r => r.patientId.equals(id)).reverse();
   }
-  save(record: VitalSignRecord): void { this.records.push(record); }
+  save(record: VitalSignRecord): Promise<VitalSignRecord> {
+    this.records.push(record);
+    return Promise.resolve(record);
+  }
 }

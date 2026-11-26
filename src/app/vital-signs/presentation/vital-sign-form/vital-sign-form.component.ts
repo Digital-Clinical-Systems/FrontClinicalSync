@@ -57,7 +57,9 @@ import { pacienteDeLaRuta } from '../../../shared/presentation/selected-patient'
       @if (ok()) { <p class="notice notice--ok" role="status">{{ ok() }}</p> }
 
       <div class="form-actions">
-        <button type="submit" class="btn btn--primary">Guardar registro</button>
+        <button type="submit" class="btn btn--primary" [disabled]="enviando()">
+          {{ enviando() ? 'Guardando...' : 'Guardar registro' }}
+        </button>
         <span class="muted" style="font-size:.8rem">Firmado como {{ directory.nameOf(user.id().value) }}</span>
       </div>
     </form>
@@ -76,10 +78,20 @@ export class VitalSignFormComponent {
   systolic = 120; diastolic = 75; heartRate = 78; oxygen = 97; temperature = 36.6;
   readonly error = signal(''); readonly ok = signal('');
 
-  submit(): void {
+  /**
+   * Con la confirmacion del servidor de por medio el alta deja de ser inmediata,
+   * de modo que un segundo envio mientras el primero viaja crearia dos
+   * registros clinicos del mismo dato. El boton queda inhabilitado hasta que la
+   * peticion termina, de una forma o de otra.
+   */
+  readonly enviando = signal(false);
+
+  async submit(): Promise<void> {
+    if (this.enviando()) return;
     this.error.set(''); this.ok.set('');
+    this.enviando.set(true);
     try {
-      const record = this.store.register({
+      const record = await this.store.register({
         patientId: PatientId.of(this.patientId),
         recordedBy: this.user.id(),
         bloodPressure: BloodPressure.of(this.systolic, this.diastolic),
@@ -91,6 +103,10 @@ export class VitalSignFormComponent {
       this.ok.set(record.riskLevel === 'NORMAL'
         ? `Registro guardado. Estado evaluado: ${etiqueta}.`
         : `Registro guardado. Estado evaluado: ${etiqueta}. Se genero una alerta para el equipo.`);
-    } catch (e) { this.error.set((e as Error).message); }
+    } catch (e) {
+      this.error.set((e as Error).message);
+    } finally {
+      this.enviando.set(false);
+    }
   }
 }
