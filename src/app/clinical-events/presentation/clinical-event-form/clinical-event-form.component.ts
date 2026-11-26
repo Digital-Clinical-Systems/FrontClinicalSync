@@ -94,7 +94,9 @@ const SEVERITY_TONE: Record<string, ChipTone> = {
         @if (ok()) { <p class="notice notice--ok" role="status">{{ ok() }}</p> }
 
         <div class="form-actions">
-          <button type="submit" class="btn btn--primary">Guardar registro</button>
+          <button type="submit" class="btn btn--primary" [disabled]="enviando()">
+            {{ enviando() ? 'Guardando...' : 'Guardar registro' }}
+          </button>
           <span class="muted" style="font-size:.8rem">Firmado como {{ directory.nameOf(user.id().value) }}</span>
         </div>
       </form>
@@ -165,6 +167,14 @@ export class ClinicalEventFormComponent {
   readonly error = signal('');
   readonly ok = signal('');
 
+  /**
+   * Con la confirmacion del servidor de por medio el alta deja de ser inmediata,
+   * de modo que un segundo envio mientras el primero viaja crearia dos
+   * registros clinicos del mismo dato. El boton queda inhabilitado hasta que la
+   * peticion termina, de una forma o de otra.
+   */
+  readonly enviando = signal(false);
+
   readonly esMedicamento = computed(() => this._tipo() === ClinicalEventType.MedicationAdministration);
   indicacionesDelPaciente() { return this.orders.activeFor(this.pacienteId); }
 
@@ -182,10 +192,12 @@ export class ClinicalEventFormComponent {
   etiquetaGravedad(s: string) { return CLINICAL_EVENT_SEVERITY_LABEL[s as ClinicalEventSeverity] ?? s; }
   tonoGravedad(s: string): ChipTone { return SEVERITY_TONE[s] ?? 'neutral'; }
 
-  guardar(): void {
+  async guardar(): Promise<void> {
+    if (this.enviando()) return;
     this.error.set(''); this.ok.set('');
+    this.enviando.set(true);
     try {
-      this.store.record({
+      await this.store.record({
         patientId: PatientId.of(this.pacienteId),
         recordedBy: this.user.id(),
         type: this._tipo(),
@@ -202,6 +214,8 @@ export class ClinicalEventFormComponent {
       this.gravedad = ClinicalEventSeverity.Routine;
     } catch (e) {
       this.error.set((e as Error).message);
+    } finally {
+      this.enviando.set(false);
     }
   }
 }

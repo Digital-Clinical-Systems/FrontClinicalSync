@@ -23,11 +23,16 @@ export class ClinicalEventsStore {
     return this.forPatient(patientId).filter(e => e.occurredAt >= since);
   }
 
-  record(input: ClinicalEventInput): ClinicalEvent {
-    const event = ClinicalEvent.record_(input);   // las invariantes se validan aqui
-    this.repo.save(event);
-    this.events.update(list => [event, ...list]);
-    for (const e of event.pullEvents()) this.bus.publish(e);
-    return event;
+  /**
+   * La anotacion que queda es la que confirma el API, con su identificador y su
+   * sello de tiempo. Los eventos publicados son los del agregado local y solo
+   * avisan del cambio: la alerta critica la levanta la politica del servidor.
+   */
+  async record(input: ClinicalEventInput): Promise<ClinicalEvent> {
+    const local = ClinicalEvent.record_(input);   // las invariantes se validan aqui
+    const guardado = await this.repo.save(local);
+    this.events.update(list => [guardado, ...list]);
+    for (const e of local.pullEvents()) this.bus.publish(e);
+    return guardado;
   }
 }
