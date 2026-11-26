@@ -22,12 +22,21 @@ export class CurrentUser {
   readonly autenticado = computed(() => this.actual() !== null);
 
   /**
-   * Identificador del profesional. Sin sesion devuelve un centinela en lugar de
-   * fallar: la guarda impide que una pantalla se renderice sin sesion, y si
-   * alguna vez ocurriera, el API rechaza ese identificador antes de que pueda
-   * escribirse un registro a nombre de nadie.
+   * Identificador del profesional: el que le asigno el backend, no el nombre
+   * con el que inicia sesion.
+   *
+   * Es el mismo con el que el API referencia a las personas en cada registro
+   * clinico -- quien tomo un control, quien prescribio una indicacion, quien
+   * recibe un traspaso --, de modo que usarlo aqui es lo que permite comparar
+   * la identidad de la sesion con la de un registro. El nombre de usuario sirve
+   * para iniciar sesion y para nada mas.
+   *
+   * Sin sesion devuelve un centinela en lugar de fallar: la guarda impide que
+   * una pantalla se renderice sin sesion, y si alguna vez ocurriera, el API
+   * rechaza ese identificador antes de que pueda escribirse un registro a
+   * nombre de nadie.
    */
-  readonly id = computed(() => UserId.of(this.actual()?.username ?? 'sesion-ausente'));
+  readonly id = computed(() => UserId.of(this.actual()?.id ?? 'sesion-ausente'));
 
   readonly displayName = computed(() => this.actual()?.fullName ?? '');
 
