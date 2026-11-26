@@ -27,20 +27,27 @@ export class HandoverStore {
     return this.forPatient(patientId)[0];
   }
 
-  issue(
+  async issue(
     patientId: PatientId, outgoing: UserId, outgoingRole: Role,
     incoming: UserId, content: SbarContent,
-  ): Handover {
-    const h = Handover.issue(patientId, outgoing, outgoingRole, incoming, content);
-    this.handovers.update(l => [h, ...l]);
-    this.repo.save(h);
-    for (const e of h.pullEvents()) this.bus.publish(e);
-    return h;
+  ): Promise<Handover> {
+    const local = Handover.issue(patientId, outgoing, outgoingRole, incoming, content);
+    const guardado = await this.repo.save(local);
+    this.handovers.update(l => [guardado, ...l]);
+    for (const e of local.pullEvents()) this.bus.publish(e);
+    return guardado;
   }
-  acknowledge(h: Handover, by: UserId): void {
+
+  /**
+   * La regla se comprueba dos veces y en los dos lados tiene sentido: aqui para
+   * que el enfermero sepa en el acto por que no puede acusar, y en el API porque
+   * es el unico lugar donde la comprobacion no se puede saltar.
+   */
+  async acknowledge(h: Handover, by: UserId): Promise<Handover> {
     h.acknowledge(by);
-    this.handovers.update(l => [...l]);
-    this.repo.save(h);
+    const guardado = await this.repo.acknowledge(h);
+    this.handovers.update(l => l.map(x => (x.id === guardado.id ? guardado : x)));
     for (const e of h.pullEvents()) this.bus.publish(e);
+    return guardado;
   }
 }

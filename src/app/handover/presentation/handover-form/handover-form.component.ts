@@ -131,7 +131,9 @@ import { HANDOVER_STATUS_LABEL, HANDOVER_STATUS_TONE } from '../../../shared/pre
       </div>
 
       <div class="form-actions">
-        <button type="submit" class="btn btn--primary" [disabled]="!puedeEmitir().permitido">Emitir traspaso</button>
+        <button type="submit" class="btn btn--primary" [disabled]="!puedeEmitir().permitido || enviando()">
+          {{ enviando() ? 'Emitiendo...' : 'Emitir traspaso' }}
+        </button>
       </div>
     </form>
 
@@ -251,22 +253,37 @@ export class HandoverFormComponent {
     this.ok.set('Borrador compuesto con los datos registrados. Revisalo y corrigelo antes de emitirlo.');
   }
 
-  emitir(): void {
+
+  /**
+   * Con la confirmacion del servidor de por medio la emision deja de ser
+   * inmediata, de modo que un segundo envio mientras el primero viaja emitiria
+   * dos veces lo mismo. El boton queda inhabilitado hasta que la peticion
+   * termina, de una forma o de otra.
+   */
+  readonly enviando = signal(false);
+
+  async emitir(): Promise<void> {
+    if (this.enviando()) return;
     this.error.set(''); this.ok.set('');
+    this.enviando.set(true);
     try {
-      this.store.issue(
+      await this.store.issue(
         PatientId.of(this.pacienteId), this.user.id(), this.user.role(), UserId.of(this.entranteId),
         SbarContent.of(this.situacion, this.antecedentes, this.evaluacion, this.recomendacion),
       );
       this.ok.set('Traspaso emitido. Queda pendiente del acuse del enfermero entrante.');
       this.situacion = ''; this.antecedentes = ''; this.evaluacion = ''; this.recomendacion = '';
-    } catch (e) { this.error.set((e as Error).message); }
+    } catch (e) {
+      this.error.set((e as Error).message);
+    } finally {
+      this.enviando.set(false);
+    }
   }
 
-  acusar(h: Handover): void {
+  async acusar(h: Handover): Promise<void> {
     this.error.set(''); this.ok.set('');
     try {
-      this.store.acknowledge(h, this.user.id());
+      await this.store.acknowledge(h, this.user.id());
       this.ok.set('Acuse de recibo registrado.');
     } catch (e) { this.error.set((e as Error).message); }
   }
