@@ -4,9 +4,17 @@ import { AUDIT_LOG_REPOSITORY } from '../domain/services/audit-log.repository';
 import { AuditLog } from '../domain/model/audit-log.entity';
 
 /**
- * Capa de aplicacion de BC-06 (patron Conformist). Escucha todos los eventos de
- * dominio y los normaliza a AuditLog. No publica hacia el dominio: ningun
- * contexto depende de Audit para completar su operacion.
+ * Capa de aplicacion de BC-06 (patron Conformist). No publica hacia el dominio:
+ * ningun contexto depende de Audit para completar su operacion.
+ *
+ * Las entradas las deriva el servidor de los eventos de dominio de cada
+ * contexto, en la misma transaccion que los produjo. Este contexto no las
+ * escribe, y es lo que se esperaria de una bitacora: si el cliente pudiera
+ * anotar, la bitacora dejaria de ser prueba de lo que ocurrio y pasaria a ser
+ * prueba de lo que el cliente dijo que ocurrio.
+ *
+ * Lo que llega por el bus solo avisa de que hubo actividad; la reaccion es
+ * volver a leer la bitacora del servidor.
  */
 @Injectable({ providedIn: 'root' })
 export class AuditStore {
@@ -15,19 +23,41 @@ export class AuditStore {
   readonly logs = signal<AuditLog[]>([]);
   readonly count = computed(() => this.logs().length);
 
+  private relecturaPendiente = false;
+
   constructor() {
     this.bus.all().subscribe(event => {
       if (event.name === 'LogDeAuditoriaCreado') return;   // evita realimentarse
-      const log = AuditLog.from(event.name, event.occurredAt, event.payload as Record<string, unknown>);
-      this.logs.update(list => [log, ...list]);            // append-only
-      this.repo.append(log);
+      this.releer();
     });
   }
 
-  /** Carga la bitacora historica. Se antepone a lo ya anotado en esta sesion. */
+  /**
+   * Una escritura publica varios eventos de forma sincrona. Agrupar la
+   * relectura en una microtarea deja una sola peticion por escritura sin
+   * introducir un temporizador, que haria la reaccion dificil de probar.
+   */
+  private releer(): void {
+    if (this.relecturaPendiente) return;
+    this.relecturaPendiente = true;
+    queueMicrotask(() => {
+      this.relecturaPendiente = false;
+      void this.load();
+    });
+  }
+
+  /**
+   * Lee la bitacora del servidor, que es la version que vale.
+   *
+   * Una lectura vacia sobre una bitacora que ya tenia entradas no se adopta: o
+   * el rol no la puede leer o la peticion fallo, y en los dos casos vaciar la
+   * pantalla seria afirmar que no hay registro de nada. Se conserva lo ultimo
+   * leido y el motivo queda en la consola.
+   */
   async load(): Promise<void> {
-    const historicos = await this.repo.load();
-    this.logs.update(actuales => [...actuales, ...historicos]);
+    const leidos = await this.repo.load();
+    if (!leidos.length && this.logs().length) return;
+    this.logs.set(leidos);
   }
 
   /** US-32: historial de cambios de un recurso, del mas reciente al mas antiguo. */

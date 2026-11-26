@@ -8,6 +8,15 @@ interface AuditLogDto {
   affectedResource: string; actorId: string; metadata?: Record<string, unknown>;
 }
 
+/**
+ * Adaptador HTTP de BC-06, de solo lectura.
+ *
+ * El API no expone un alta de bitacora, y es la garantia que se esperaria de
+ * una bitacora: si el cliente pudiera anotar, la bitacora dejaria de ser prueba
+ * de lo que paso y pasaria a ser prueba de lo que el cliente dijo que paso. Las
+ * entradas las genera el servidor a partir de los eventos de dominio de cada
+ * contexto, en la misma transaccion que los produjo.
+ */
 @Injectable()
 export class AuditLogHttpRepository implements AuditLogRepository {
   private readonly api = inject(ClinicalApi);
@@ -17,12 +26,5 @@ export class AuditLogHttpRepository implements AuditLogRepository {
     return dtos
       .map(dto => AuditLog.fromPersistence(dto))
       .sort((a, b) => b.occurredAt.getTime() - a.occurredAt.getTime());
-  }
-
-  append(log: AuditLog): void {
-    void this.api.post('audit-logs', {
-      id: log.id, actionType: log.actionType, occurredAt: log.occurredAt.toISOString(),
-      affectedResource: log.affectedResource, actorId: log.actorId, metadata: log.metadata,
-    });
   }
 }
