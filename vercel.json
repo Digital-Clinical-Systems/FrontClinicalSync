@@ -9,10 +9,6 @@
       "destination": "https://backclinicalsync-production.up.railway.app/api/v1/$1"
     },
     {
-      "source": "/api/(.*)",
-      "destination": "/api?ruta=$1"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

@@ -1,14 +1,12 @@
 /**
  * Configuracion de desarrollo.
  *
- * `apiBaseUrl` apunta a json-server, que se levanta con `npm run fake-api`.
- *
- * `backendBaseUrl` es la misma ruta relativa que en produccion: `ng serve` la
- * reenvia al backend segun `proxy.conf.json`. Asi el navegador nunca cruza de
- * origen y el entorno local se comporta igual que el publicado.
+ * `backendBaseUrl` es relativa igual que en produccion: `proxy.conf.mjs`
+ * reenvia `/api/v1/*` al backend desplegado, de modo que `ng serve` trabaja
+ * contra los mismos datos que la aplicacion publicada y no hace falta levantar
+ * ningun servicio local.
  */
 export const environment = {
   production: false,
-  apiBaseUrl: 'http://localhost:3000',
   backendBaseUrl: '/api/v1',
 };
